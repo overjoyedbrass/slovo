@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/slovo/static/css/main.663c8fea.css",
+    "main.css": "/slovo/static/css/main.61c82a3e.css",
     "main.js": "/slovo/static/js/main.bd756d3d.js",
     "static/media/bulbLight.png": "/slovo/static/media/bulbLight.4f4f6af163dd944acdd3.png",
     "static/media/infoLight.png": "/slovo/static/media/infoLight.59be45241a406a50c314.png",
     "index.html": "/slovo/index.html",
-    "main.663c8fea.css.map": "/slovo/static/css/main.663c8fea.css.map",
+    "main.61c82a3e.css.map": "/slovo/static/css/main.61c82a3e.css.map",
     "main.bd756d3d.js.map": "/slovo/static/js/main.bd756d3d.js.map"
   },
   "entrypoints": [
-    "static/css/main.663c8fea.css",
+    "static/css/main.61c82a3e.css",
     "static/js/main.bd756d3d.js"
   ]
 }
