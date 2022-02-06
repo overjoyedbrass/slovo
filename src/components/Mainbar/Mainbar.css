@@ -1,0 +1,58 @@
+.mainbar {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    width: 100%;
+    line-height: 50px;
+    margin-top: 1em;
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    padding: 0.2em;
+}
+
+.title {
+    font-size: 3em;
+    font-weight: bold;
+    padding-left: 2em;
+    padding-right: 2em;
+    user-select: none;
+}
+
+.dialog {
+    position: absolute;
+    width: 80%;
+    max-width: 800px;
+    top: 10%;
+    height: 82%;
+    border-radius: 3em;
+    border: 1px solid;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    text-align: justify;
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.dialog::-webkit-scrollbar{
+    display: none;
+}
+
+.dialog .text {
+    margin: 3em;
+}
+
+@media only screen and (max-width: 700px) {
+    .title {
+        font-size: 2em;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+    .dialog .text {
+        margin: 1em;
+    }
+}
