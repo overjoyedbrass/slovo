@@ -117,6 +117,7 @@ export const Game = () => {
     }
 
     const addLetter = letter => {
+        letter = letter.toLowerCase()
         if(!isLetter(letter)){
             return
         }

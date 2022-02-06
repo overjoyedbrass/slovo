@@ -41,7 +41,9 @@ export const loadGameOver = () => {
 export const loadWord = async () => {
     const url = `${BASE_URL}/word`
     const response = await fetch(url)
-    const slovo = await response.text()
+    var slovo = await response.text()
+    slovo = slovo.toLocaleLowerCase()
+    
 
     const lastWord = localStorage.getItem("lastWord", slovo)
     let reset = false
@@ -49,7 +51,7 @@ export const loadWord = async () => {
         reset = true
     }
     localStorage.setItem("lastWord", slovo)
-    return [slovo.toLowerCase(), reset]
+    return [slovo, reset]
 }
 
 export async function wordCheck(slovo) {
