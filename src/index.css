@@ -3,7 +3,7 @@ body {
   font-family: 'Rubik', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: clamp(1rem, 2.5vmin, 1.5rem);
+  font-size: clamp(1rem, 2vmin, 1.5rem);
 }
 
 code {

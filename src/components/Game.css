@@ -21,12 +21,15 @@
     border: 1px solid;
     border-radius: 0.4em;
     
+    justify-content: center;
+
     min-width: 2.5em;
     height: 3.5em;
+    line-height: 3.5em;
 
     font-weight: bold;
     text-align: center;
-    line-height: 3.5em;
+    
     user-select: none;
 
     display: inline-block;
@@ -49,9 +52,9 @@
     box-sizing: border-box;
     border: 2px solid;
     margin: 5px;
-    width: 1.6em;
-    height: 1.6em;
-    font-size: 3rem;
+    width: 2em;
+    height: 2em;
+    font-size: clamp(0.8em, 4vmin, 4em);
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
@@ -80,19 +83,11 @@
     line-height: 8em;
 }
 
-@media only screen and (max-width: 700px) {
-    .dialog .tablecell {
-        font-size: 2rem;
-    }
+.dialog .tablecell {
+    font-size: clamp(0.5rem, 4vmin, 4rem);
 }
 
 @media only screen and (max-width: 460px) {
-    .dialog .tablecell {
-        font-size: 1rem;
-    }
-    .tablecell {
-        font-size: 2rem;
-    }
     .keyCell {
         font-size: 3vmin;
     }
