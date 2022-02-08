@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
 import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, loadWordLength} from '../helpers.js'
@@ -10,6 +10,8 @@ import { selectCurrentTheme } from '../theme/themeSlice.js'
 import { Playtable } from './Playtable/Playtable.js'
 import { Keyboard } from './Keyboard/Keyboard.js'
 import { InfoBox } from './InfoBox.js'
+
+import { saveNewWord, selectCurrentLength, selectTargetWord } from '../slices/targetWords.js'
 
 function getUsedLetters(array2D, attempt){
     const letters = []
@@ -24,8 +26,8 @@ function getUsedLetters(array2D, attempt){
 export const Game = ({setroute}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
     const attempts = 6
-    const wordLength = loadWordLength()
-    
+    const wordLength = useSelector(selectCurrentLength)
+    const targetWord = useSelector(selectTargetWord)
     const correctLetters = loadCorrect(wordLength)
     var gameOver = loadGameOver(wordLength)
 
@@ -33,13 +35,15 @@ export const Game = ({setroute}) => {
     const [warnMessage, setWarnMessage] = React.useState("")
     const [table, setTable] = React.useState(loadTable(attempts, wordLength))
     const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
-    const [targetWord, setTargetWord] = React.useState("")
+    const dispatch = useDispatch()
 
     React.useEffect(() => {
-        loadWord().then(o => {
+        if(targetWord !== "") return
+        loadWord(wordLength).then(o => {
             const slovo = o[0]
             const newWord = o[1]
-            setTargetWord(slovo)
+
+            dispatch(saveNewWord(slovo))
             if(newWord){
                 resetGame()
             }
@@ -115,6 +119,7 @@ export const Game = ({setroute}) => {
     }
 
     const addLetter = letter => {
+        // console.log("addLetter", letter)
         letter = letter.toLowerCase()
         if(!isLetter(letter)){
             return
@@ -220,12 +225,11 @@ export const Game = ({setroute}) => {
                     }
 
                     <Playtable gameState={table} theme={theme} colorFunction={getCellRowColors}/>
-                    <Keyboard handlefunction={handleKeyDown} getKeyCellColor={getKeyCellColor}/>    
+                    <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
                     </>
                 )
             }
             {/* <button onClick={() => resetGame()}>RESET</button> */}
-            <font style={{fontSize: '0.5em', position: 'absolute', bottom: "0px", left: "0px", color: theme.textColor}}>Last version 6:23</font>
         </div>
     )
 }

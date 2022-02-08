@@ -16,7 +16,7 @@
     margin: 5px;
     width: 2em;
     height: 2em;
-    font-size: clamp(0.8em, 4vmin, 4em);
+    font-size: clamp(1em, 5vmin, 2em);
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;

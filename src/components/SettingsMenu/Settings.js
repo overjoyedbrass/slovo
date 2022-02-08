@@ -45,7 +45,8 @@ export const Settings = ({setroute}) => {
                         removeGameStorage(wordLength)
                         doRefresh(!refresh)
                     }} 
-                    className="warnButton" style={{backgroundColor: theme.warn, color: theme.textColor}}
+                    className="deleteButton" 
+                    style={{backgroundColor: theme.warn, color: theme.textColor}}
                 >
                     Vymazať dáta hry
                 </button>

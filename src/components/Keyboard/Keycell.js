@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const Keycell = ({ letter, handlefunction, color, theme }) => {
+export const Keycell = ({ letter, handlefunction, color }) => {
     let sx = { backgroundColor: color }
     if(letter === '↵' || letter === '⌫'){
         sx = {
@@ -10,9 +10,9 @@ export const Keycell = ({ letter, handlefunction, color, theme }) => {
     }
     return (
         <div 
-            onClick={() => handlefunction(letter)} 
+            onClick={() => handlefunction(letter)}            
             className="keyCell" 
-            style={sx}>{ letter }
+            style={sx}>{ letter.toUpperCase() }
         </div>
     )
 }

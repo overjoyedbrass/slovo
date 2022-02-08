@@ -44,8 +44,15 @@ export const loadCorrect = length => {
 }
 
 export const loadWordLength = () => {
-    const length = localStorage.getItem(`wordLength`)
-    return length ? length : 5
+    var length = localStorage.getItem(`wordLength`)
+    if(!length || isNaN(parseInt(length))){
+        length = 5
+        localStorage.wordLength = length
+    }
+    else {
+        length = parseInt(length)
+    }
+    return length
 }
 
 export const loadGameOver = (length) => {

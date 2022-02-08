@@ -4,7 +4,6 @@ import { Settings } from './components/SettingsMenu/Settings.js'
 function App() {
     const [route, changeRoute] = React.useState("game")
     const [routes, setRoutes] = React.useState({})
-    console.log("route", route)
 
     React.useEffect(() => {
         setRoutes({

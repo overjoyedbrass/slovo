@@ -9,9 +9,9 @@ import { selectCurrentTheme } from '../../theme/themeSlice'
 import './Keyboard.css'
 
 const ROWS = [
-    'QWERTZUIOP',
-    'ASDFGHJKL',
-    '↵YXCVBNM⌫'
+    'qwertzuiop',
+    'asdfghjkl',
+    '↵yxcvbnm⌫'
 ]
 
 export const Keyboard = ({handlefunction, getKeyCellColor}) => {
@@ -21,7 +21,7 @@ export const Keyboard = ({handlefunction, getKeyCellColor}) => {
         <div className="keyboard">{
             ROWS.map((row, rowIndex) => 
             <div key={rowIndex} className="keyBoardRow">
-                { row.split('').map((l, i) => 
+                { row.split('').map(l => 
                     <Keycell 
                         key={l} 
                         letter={l} 
