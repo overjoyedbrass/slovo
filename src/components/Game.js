@@ -21,7 +21,7 @@ function getUsedLetters(array2D, attempt){
     return letters
 }
 
-export const Game = () => {
+export const Game = ({setroute}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
     const attempts = 6
     const wordLength = loadWordLength()
@@ -200,7 +200,7 @@ export const Game = () => {
 
     return (
         <div className="game">
-            <Mainbar />
+            <Mainbar setroute={setroute}/>
 
             {
                 !targetWord ? 
@@ -225,6 +225,7 @@ export const Game = () => {
                 )
             }
             {/* <button onClick={() => resetGame()}>RESET</button> */}
+            <font style={{fontSize: '0.5em', position: 'absolute', bottom: "0px", left: "0px", color: theme.textColor}}>Last version 6:23</font>
         </div>
     )
 }

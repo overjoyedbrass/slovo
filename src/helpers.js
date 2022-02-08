@@ -87,7 +87,7 @@ export const removeGameStorage = length => {
 
 export const suggestWord = async slovo => {
     const url = `${BASE_URL}/suggest?word=${slovo.toLowerCase()}`
-    const response = await customFetch(url)
+    await customFetch(url)
 }
 
 export function letterFrequency(word){

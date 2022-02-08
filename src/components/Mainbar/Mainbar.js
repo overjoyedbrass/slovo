@@ -14,7 +14,7 @@ import settingsLight from '../../img/settingsLight.png'
 
 import { Tablecell } from '../Playtable/Tablecell.js'
 
-export const Mainbar = () => {
+export const Mainbar = ({setroute}) => {
     const [open, setOpen] = React.useState(false)
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
@@ -25,7 +25,7 @@ export const Mainbar = () => {
 
             <div className="title">SLOVO</div>
 
-            <a href="/slovo/tools"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} /></a>
+            <img onClick={() => setroute("settings")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} />
 
             {!open ? null :
             <div style={{backgroundColor: theme.dialogColor, borderColor: theme.textColor}} onClick={() => setOpen(false)} className="dialog">

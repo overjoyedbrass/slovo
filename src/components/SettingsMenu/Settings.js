@@ -14,7 +14,7 @@ import './Settings.css'
 import { loadGameOver, loadWordLength, removeGameStorage } from '../../helpers'
 import { Suggester } from './Suggester'
 
-export const Settings = () => {
+export const Settings = ({setroute}) => {
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
     const wordLength = loadWordLength()
@@ -31,7 +31,7 @@ export const Settings = () => {
         <div className="mainbar">
 
 
-            <a href="/slovo"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} /></a>
+            <img onClick={() => setroute("game")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
             <div className="title">Nástroje</div>
             <ThemeSwitch />
         </div>

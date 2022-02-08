@@ -1,22 +1,21 @@
+import React, { useEffect } from 'react';
 import { Game } from './components/Game.js'
-
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-    Link
-} from 'react-router-dom'
-import { Settings } from './components/SettingsMenu/Settings.js';
-
+import { Settings } from './components/SettingsMenu/Settings.js'
 function App() {
+    const [route, changeRoute] = React.useState("game")
+    const [routes, setRoutes] = React.useState({})
+    console.log("route", route)
+
+    React.useEffect(() => {
+        setRoutes({
+            game: (<Game setroute={changeRoute}/>),
+            settings: (<Settings setroute={changeRoute}/>)
+        })    
+    }, [])
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/slovo" element={ <Game /> }/>
-                <Route path="/slovo/tools" element={ <Settings /> }/>
-            </Routes>
-        </BrowserRouter>
+        route in routes ? 
+        routes[route] :
+        <Game setroute={changeRoute}/>
     )
 }
-
 export default App;
