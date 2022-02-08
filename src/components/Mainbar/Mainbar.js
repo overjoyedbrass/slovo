@@ -25,7 +25,7 @@ export const Mainbar = () => {
 
             <div className="title">SLOVO</div>
 
-            <a href="/tools"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} /></a>
+            <a href="/slovo/tools"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} /></a>
 
             {!open ? null :
             <div style={{backgroundColor: theme.dialogColor, borderColor: theme.textColor}} onClick={() => setOpen(false)} className="dialog">

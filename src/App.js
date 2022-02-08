@@ -12,8 +12,8 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={ <Game /> }/>
-                <Route path="/tools" element={ <Settings /> }/>
+                <Route path="/slovo" element={ <Game /> }/>
+                <Route path="/slovo/tools" element={ <Settings /> }/>
             </Routes>
         </BrowserRouter>
     )

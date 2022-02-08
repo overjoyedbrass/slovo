@@ -1,10 +1,10 @@
 const BASE_URL = ""
-
+const AUTHORIZATION_KEY = ""
 
 async function customFetch(url){
     return await fetch(url, {
         headers: {
-            authorization: "slovak-wordle"
+            authorization: AUTHORIZATION_KEY
         }
     })
 }

@@ -31,7 +31,7 @@ export const Settings = () => {
         <div className="mainbar">
 
 
-            <a href="/"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} /></a>
+            <a href="/slovo"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} /></a>
             <div className="title">Nástroje</div>
             <ThemeSwitch />
         </div>
