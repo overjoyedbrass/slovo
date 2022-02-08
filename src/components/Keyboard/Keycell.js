@@ -8,5 +8,11 @@ export const Keycell = ({ letter, handlefunction, color, theme }) => {
             paddingRight: "0.8em"
         }
     }
-    return (<div onClick={() => handlefunction(letter)} className="keyCell" style={sx}>{ letter }</div>)
+    return (
+        <div 
+            onClick={() => handlefunction(letter)} 
+            className="keyCell" 
+            style={sx}>{ letter }
+        </div>
+    )
 }

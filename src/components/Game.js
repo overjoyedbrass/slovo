@@ -1,14 +1,15 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Keycell } from './Keycell.js'
-import { Tablecell } from './Tablecell.js'
 import { Mainbar } from './Mainbar/Mainbar.js'
-import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency} from '../helpers.js'
+import { Spinner } from './Spinner/Spinner.js'
+import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, loadWordLength} from '../helpers.js'
 import './Game.css'
 
 import { themes } from '../theme/themes.js'
 import { selectCurrentTheme } from '../theme/themeSlice.js'
-
+import { Playtable } from './Playtable/Playtable.js'
+import { Keyboard } from './Keyboard/Keyboard.js'
+import { InfoBox } from './InfoBox.js'
 
 function getUsedLetters(array2D, attempt){
     const letters = []
@@ -20,24 +21,18 @@ function getUsedLetters(array2D, attempt){
     return letters
 }
 
-const ROWS = [
-    'QWERTZUIOP',
-    'ASDFGHJKL',
-    '↵YXCVBNM⌫'
-]
-const correctLetters = loadCorrect()
-var gameOver = loadGameOver()
-var fetching = false
-
 export const Game = () => {
     const theme = themes[useSelector(selectCurrentTheme)]
-
     const attempts = 6
-    const wordLength = 5
+    const wordLength = loadWordLength()
+    
+    const correctLetters = loadCorrect(wordLength)
+    var gameOver = loadGameOver(wordLength)
 
+    const [fetching, setFecthing] = React.useState(false)
     const [warnMessage, setWarnMessage] = React.useState("")
-    const [attempt, setAttempt] = React.useState(loadAttempt())
-    const [gameState, setGameState] = React.useState(loadTable(attempts, wordLength))
+    const [table, setTable] = React.useState(loadTable(attempts, wordLength))
+    const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
     const [targetWord, setTargetWord] = React.useState("")
 
     React.useEffect(() => {
@@ -46,7 +41,7 @@ export const Game = () => {
             const newWord = o[1]
             setTargetWord(slovo)
             if(newWord){
-                reset()
+                resetGame()
             }
         })
     }, [])
@@ -56,11 +51,13 @@ export const Game = () => {
     }, [theme])
 
     React.useEffect(() => {
-        localStorage.setItem('attempt', attempt)
+        saveToStorage("attempt", wordLength, attempt)
+        saveToStorage("table", wordLength, JSON.stringify(table))
     }, [attempt])
+
     React.useEffect(() => {
-        localStorage.setItem('table', JSON.stringify(gameState))
-    }, [gameState])
+        saveToStorage("table", wordLength, JSON.stringify(table))
+    }, [table])
 
     const handlefunction = letter => {
         setWarnMessage("")
@@ -77,6 +74,7 @@ export const Game = () => {
             addLetter(letter)
         }
     }
+
     const handleKeyDown = (event) => handlefunction(event.key)
     React.useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
@@ -87,22 +85,23 @@ export const Game = () => {
         if(gameOver === "1"){
             return
         }
-        if(gameState[attempt].includes("")){
+        if(table[attempt].includes("")){
             setWarnMessage("Slovo musí byť dĺžky 5")
             return
         }
-        const slovo = gameState[attempt].join("")
-        fetching = true
+        const slovo = table[attempt].join("")
+
+        setFecthing(true)
         const goodWord = await wordCheck(slovo)
-        fetching = false
+        setFecthing(false)
         if(!goodWord){
             setWarnMessage("Slovo nie je v zozname")
             return
         }
         let finish = true;
         for(let i = 0; i < wordLength; i++){
-            if(gameState[attempt][i] === targetWord[i]){
-                addCorrectLetter(gameState[attempt][i])
+            if(table[attempt][i] === targetWord[i]){
+                addCorrectLetter(table[attempt][i])
             }
             else{
                 finish = false;
@@ -110,10 +109,9 @@ export const Game = () => {
         }
         if(attempt+1 >= attempts || finish){
             gameOver = "1";
-            localStorage.setItem("gameOver", gameOver)
+            saveToStorage("gameOver", wordLength, gameOver)
         }
         setAttempt(attempt + 1)
-
     }
 
     const addLetter = letter => {
@@ -121,46 +119,38 @@ export const Game = () => {
         if(!isLetter(letter)){
             return
         }
-        const copy = copy2D(gameState)
+        const copy = copy2D(table)
         for(let i = 0; i < copy[attempt].length; i++){
             if(copy[attempt][i] === ""){
                 copy[attempt][i] = letter
-                setGameState(copy)
+                setTable(copy)
                 return
             }
         }
     }
     const removeLetter = () => {
-        const copy = copy2D(gameState)
+        const copy = copy2D(table)
         for(let i = copy[attempt].length-1; i >= 0; i--){
             if(copy[attempt][i] !== ""){
                 copy[attempt][i] = ""
-                setGameState(copy)
+                setTable(copy)
                 return
             }
         }
     }
     const addCorrectLetter = l => {
         correctLetters.push(l)
-        localStorage.setItem('correct', JSON.stringify(correctLetters))
+        saveToStorage("correct", wordLength, JSON.stringify(correctLetters))
     }
 
-    const usedLetters = getUsedLetters(gameState, attempt)
-
-    function reset(){
-        correctLetters.length = 0
-        gameOver = "0"
-        setGameState(Array(attempts).fill(0).map(x => Array(wordLength).fill("")))
-        setAttempt(0)
-        removeGameStorage()
-    }
+    const usedLetters = getUsedLetters(table, attempt)
 
     const getCellRowColors = index => {
         const colors = Array(wordLength).fill("")
         if(index >= attempt){
             return colors
         }
-        const word = gameState[index].join("")
+        const word = table[index].join("")
         const freq = letterFrequency(targetWord)
 
         for(let i = 0; i < wordLength; i++){
@@ -184,6 +174,14 @@ export const Game = () => {
         return colors
     }
 
+    const resetGame = () => {
+        correctLetters.length = 0
+        gameOver = "0"
+        removeGameStorage(wordLength)
+        setTable(Array(attempts).fill(Array(wordLength).fill("")))
+        setAttempt(0)
+    }
+
     const getKeyCellColor = (l) => {
         l = l.toLowerCase()
         if(!usedLetters.includes(l)){
@@ -199,54 +197,34 @@ export const Game = () => {
             return theme.wrongCell
         }
     }
+
     return (
         <div className="game">
             <Mainbar />
-            <div className="answer">
-                {gameOver === "0" ? null:
-                    <>Hľadané slovo je <a 
-                                href={`https://slovnik.aktuality.sk/pravopis/?q=${targetWord}`}
-                                target="blank" 
-                                style={{color: theme.href, backgroundColor: theme.bgColor}}
-                            >{targetWord.toUpperCase()}</a>
-                    </>
-                }
-                <div className="warning">{warnMessage}</div>
-            </div>
+
             {
-                !targetWord ? <div className="loading">Načítavam slovo : )</div> :(
-                    <div className="playtable">{
-                        gameState.map((row, rowIndex) => {
-                            const rowColors = getCellRowColors(rowIndex)
-                            return (<div key={rowIndex} className={"playtableRow"}>{
-                                row.map( (l, colIndex) => 
-                                    <Tablecell 
-                                        key={colIndex}
-                                        letter={l}
-                                        color={rowIndex < attempt ? rowColors[colIndex] : ""}
-                                    />
-                            )}</div>)
-                        }
-                        )}
-                    </div>
+                !targetWord ? 
+                (
+                    <>
+                    <div className="loadingMessage">Načítavam slovo : )</div>
+                    <Spinner theme={theme}/>
+                    </>
+                )
+                 :
+                (
+                    <>
+                    <InfoBox theme={theme} targetWord={targetWord}/>
+                    {
+                        fetching ? <div className="warning">Zisťujem . . .</div> : 
+                        <div className="warning">{warnMessage}</div>
+                    }
+
+                    <Playtable gameState={table} theme={theme} colorFunction={getCellRowColors}/>
+                    <Keyboard handlefunction={handleKeyDown} getKeyCellColor={getKeyCellColor}/>    
+                    </>
                 )
             }
-
-            <div className="keyboard">{
-                ROWS.map((row, rowIndex) => 
-                <div key={rowIndex} className="keyBoardRow">
-                    { row.split('').map((l, i) => 
-                        <Keycell 
-                            key={l} 
-                            letter={l} 
-                            handlefunction={handlefunction} 
-                            color={ getKeyCellColor(l) }
-                        />
-                    )}
-                </div>
-                )}
-            </div>
-            {/* <button onClick={() => reset()}>RESET</button> */}
+            {/* <button onClick={() => resetGame()}>RESET</button> */}
         </div>
     )
 }

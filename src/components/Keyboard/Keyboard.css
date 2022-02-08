@@ -1,0 +1,26 @@
+.keyboard {
+    text-align: center;
+    bottom: 1px;
+    font-size: inherit;
+    display: grid;
+}
+
+.keyCell {
+    margin: 0.2em;
+    border: 1px solid;
+    border-radius: 0.4em;
+    
+    justify-content: center;
+
+    min-width: 2.5em;
+    height: 3.5em;
+    line-height: 3.5em;
+
+    font-weight: bold;
+    text-align: center;
+    
+    user-select: none;
+
+    display: inline-block;
+    cursor: pointer;
+}

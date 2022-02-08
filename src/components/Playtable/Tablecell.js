@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { themes } from '../theme/themes'
+import { themes } from '../../theme/themes'
 import { useSelector } from 'react-redux'
-import { selectCurrentTheme } from '../theme/themeSlice'
+import { selectCurrentTheme } from '../../theme/themeSlice'
 
 export const Tablecell = ({letter, color}) => {
     const theme = themes[useSelector(selectCurrentTheme)]

@@ -1,5 +1,7 @@
 export const themes = {
     "light": {
+        NAME: "light",
+        
         bgColor: "white",
         textColor: "black",
 
@@ -11,10 +13,15 @@ export const themes = {
         cellBg: "lightgrey",
 
         dialogColor: "#FEFEFE",
-        href: "#0261fa"
+        href: "#0261fa",
+
+        spinner: "white",
+        warn: "#ff0000"
     },
 
     "dark": {
+        NAME: "dark",
+
         bgColor: "#333333",
         textColor: "white",
         
@@ -26,6 +33,9 @@ export const themes = {
         cellBg: "darkGrey",
 
         dialogColor: "#222222",
-        href: "#66ff66"
+        href: "#66ff66",
+
+        spinner: "#333333",
+        warn: "#bd0000"
     }
 }

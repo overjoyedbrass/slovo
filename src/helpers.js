@@ -1,4 +1,14 @@
 const BASE_URL = ""
+
+
+async function customFetch(url){
+    return await fetch(url, {
+        headers: {
+            authorization: "slovak-wordle"
+        }
+    })
+}
+
 export function copy2D(array2d){
     var newArray = []
     for (let i = 0; i < array2d.length; i++){
@@ -11,7 +21,7 @@ export function isLetter(str) {
 }
 
 export const loadTable = (rows, cols) => {
-    const table = localStorage.getItem('table')
+    const table = localStorage.getItem(`table${cols}`)
     try{
         return table ? JSON.parse(table) : Array(rows).fill(0).map(x => Array(cols).fill(""))
     }
@@ -19,12 +29,12 @@ export const loadTable = (rows, cols) => {
         return Array(rows).fill(0).map(x => Array(cols).fill(""))
     }
 }
-export const loadAttempt = () => {
-    const number = localStorage.getItem('attempt')
+export const loadAttempt = (length) => {
+    const number = localStorage.getItem(`attempt${length}`)
     return number ? parseInt(number) : 0
 }
-export const loadCorrect = () => {
-    const correct = localStorage.getItem("correct")
+export const loadCorrect = length => {
+    const correct = localStorage.getItem(`correct${length}`)
     try {
         return correct ? JSON.parse(correct) : []
     }
@@ -33,40 +43,51 @@ export const loadCorrect = () => {
     }
 }
 
-export const loadGameOver = () => {
-    const gameOver = localStorage.getItem("gameOver")
+export const loadWordLength = () => {
+    const length = localStorage.getItem(`wordLength`)
+    return length ? length : 5
+}
+
+export const loadGameOver = (length) => {
+    const gameOver = localStorage.getItem(`gameOver${length}`)
     return gameOver ? gameOver : "0"
 }
 
-export const loadWord = async () => {
-    const url = `${BASE_URL}/word`
-    const response = await fetch(url)
+export const loadWord = async (length) => {
+
+    const url = `${BASE_URL}/word?length=${length}`
+    const response = await customFetch(url)
     var slovo = await response.text()
     slovo = slovo.toLocaleLowerCase()
     
 
-    const lastWord = localStorage.getItem("lastWord", slovo)
+    const lastWord = localStorage.getItem(`lastWord${length}`)
     let reset = false
     if(slovo !== lastWord){
         reset = true
     }
-    localStorage.setItem("lastWord", slovo)
+    localStorage.setItem(`lastWord${length}`, slovo)
     return [slovo, reset]
 }
 
 export async function wordCheck(slovo) {
     const url = `${BASE_URL}/check?word=${slovo.toLowerCase()}`
-    const response = await fetch(url)
+    const response = await customFetch(url)
     const text = await response.text()
     return text === "True"
 }
 
 //dont want to do localStorage.clear(), maybe i will wantt to keep some data in future
-export const removeGameStorage = () => {
-    localStorage.setItem("correct", "")
-    localStorage.setItem("gameOver", "")
-    localStorage.setItem("attempt", "")
-    localStorage.setItem("table", "")
+export const removeGameStorage = length => {
+    localStorage.setItem(`correct${length}`, "")
+    localStorage.setItem(`gameOver${length}`, "")
+    localStorage.setItem(`attempt${length}`, "")
+    localStorage.setItem(`table${length}`, "")
+}
+
+export const suggestWord = async slovo => {
+    const url = `${BASE_URL}/suggest?word=${slovo.toLowerCase()}`
+    const response = await customFetch(url)
 }
 
 export function letterFrequency(word){
@@ -80,4 +101,8 @@ export function letterFrequency(word){
         }
     }
     return freq
+}
+
+export function saveToStorage(keyWord, wordLength, data){
+    localStorage.setItem(`${keyWord}${wordLength}`, data)
 }

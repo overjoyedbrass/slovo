@@ -1,0 +1,57 @@
+.settingsContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.warnButton {
+    border: 2px solid;
+    border-radius: 1em;
+    padding: 1em;
+    font-size: 1em;
+    color:  #bd0000;
+    cursor: pointer;
+    
+}
+
+.container {
+    border: 1px solid;
+    width: clamp(250px, 60vmin, 500px);
+    padding: 1em;
+    margin-top: 1.5em;
+    border-radius: 1.5em;
+    position: relative;
+    min-height: 8em;
+}
+
+input {
+    border-radius: 6px;
+    border-width: 2px;
+    font-size: 1em;
+    height: 1.2em;
+    width: 6em;
+    padding-left: 0.5em;
+    font-family: inherit;
+    resize: none;
+    margin-right: 0.5em;
+    color: inherit;
+}
+button {
+    display: inline-block;
+    border-radius: 6px;
+    border-width: 2px;
+    font-size: 1em;
+    height: 1.6em;
+    font-family: inherit;
+    cursor: pointer;
+    margin-bottom: 1em;
+    color: inherit;
+}
+.line {
+    border-top: 1px solid;
+    margin: 2em;
+    content: "";
+    height: 0px;
+}

@@ -1,31 +1,23 @@
 import React from 'react'
 
-import infoLight from '../../img/infoLight.png'
-import infoDark from '../../img/infoDark.png'
-import bulbLight from '../../img/bulbLight.png'
-import bulbDark from '../../img/bulbDark.png'
+import { useSelector } from 'react-redux'
+import { selectCurrentTheme } from '../../theme/themeSlice'
+import { themes } from '../../theme/themes.js'
 
 import './Mainbar.css'
 
+import infoLight from '../../img/infoLight.png'
+import infoDark from '../../img/infoDark.png'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { selectCurrentTheme, setCurrentTheme } from '../../theme/themeSlice'
-import { themes } from '../../theme/themes.js'
+import settingsDark from '../../img/settingsDark.png'
+import settingsLight from '../../img/settingsLight.png'
 
-import { Tablecell } from '../Tablecell.js'
+import { Tablecell } from '../Playtable/Tablecell.js'
 
-export const Mainbar = (props) => {
+export const Mainbar = () => {
+    const [open, setOpen] = React.useState(false)
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
-    const dispatch = useDispatch()
-    const [open, setOpen] = React.useState(false)
-
-    const switchTheme = () => {
-        const newTheme = keyTheme === "dark" ? "light" : "dark"
-        dispatch(setCurrentTheme(newTheme))
-        localStorage.setItem("theme", newTheme)
-    }
-
 
     return (
         <div className="mainbar">
@@ -33,7 +25,7 @@ export const Mainbar = (props) => {
 
             <div className="title">SLOVO</div>
 
-            <img style={{float: 'right'}} onClick={switchTheme} className="icon" src={keyTheme === "dark" ? bulbDark : bulbLight} />
+            <a href="/tools"><img style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} /></a>
 
             {!open ? null :
             <div style={{backgroundColor: theme.dialogColor, borderColor: theme.textColor}} onClick={() => setOpen(false)} className="dialog">
