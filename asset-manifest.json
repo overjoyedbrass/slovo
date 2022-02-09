@@ -1,17 +1,23 @@
 {
   "files": {
-    "main.css": "/slovo/static/css/main.53e64e11.css",
-    "main.js": "/slovo/static/js/main.a5445181.js",
+    "main.css": "/slovo/static/css/main.048152ef.css",
+    "main.js": "/slovo/static/js/main.48900dba.js",
+    "static/media/bronze.png": "/slovo/static/media/bronze.a6118719e0113ec6d7da.png",
+    "static/media/silver.png": "/slovo/static/media/silver.9053554246601536d55a.png",
+    "static/media/gold.png": "/slovo/static/media/gold.b4da14b585c28396ba35.png",
     "static/media/bulbLight.png": "/slovo/static/media/bulbLight.4f4f6af163dd944acdd3.png",
+    "static/media/lbLight.png": "/slovo/static/media/lbLight.cf15ba72bcdcd7f5edc4.png",
+    "static/media/candy.png": "/slovo/static/media/candy.d6542d0285d3f096c25f.png",
+    "static/media/infoLight.png": "/slovo/static/media/infoLight.a97e45146636971d8892.png",
     "static/media/settingsLight.png": "/slovo/static/media/settingsLight.54da80e0ab9b160e9ecb.png",
+    "static/media/lbDark.png": "/slovo/static/media/lbDark.84b35797b251fee26cbb.png",
     "static/media/settingsDark.png": "/slovo/static/media/settingsDark.f3e7b4961fbef2100705.png",
-    "static/media/infoLight.png": "/slovo/static/media/infoLight.59be45241a406a50c314.png",
     "index.html": "/slovo/index.html",
-    "main.53e64e11.css.map": "/slovo/static/css/main.53e64e11.css.map",
-    "main.a5445181.js.map": "/slovo/static/js/main.a5445181.js.map"
+    "main.048152ef.css.map": "/slovo/static/css/main.048152ef.css.map",
+    "main.48900dba.js.map": "/slovo/static/js/main.48900dba.js.map"
   },
   "entrypoints": [
-    "static/css/main.53e64e11.css",
-    "static/js/main.a5445181.js"
+    "static/css/main.048152ef.css",
+    "static/js/main.48900dba.js"
   ]
 }
