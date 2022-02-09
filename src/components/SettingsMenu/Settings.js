@@ -13,19 +13,16 @@ import homeLight from '../../img/homeLight.png'
 import { selectHistory } from '../../slices/gameState.js'
 
 import './Settings.css'
-import { loadGameOver, loadWordLength, removeGameStorage } from '../../helpers'
+import { loadWordLength } from '../../helpers'
 import { Suggester } from './Suggester'
 import { NicknamePicker } from './NicknamePicker'
 
 export const Settings = ({setroute}) => {
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
-    const wordLength = loadWordLength()
-    const gameOver = loadGameOver(wordLength)
-
+    // const wordLength = loadWordLength()
 
     const history = useSelector(selectHistory).slice(1)
-    
 
     React.useEffect(() => {
         document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;
@@ -47,8 +44,8 @@ export const Settings = ({setroute}) => {
                 <h3>Predchádzajúce slová</h3>
                 {
                     history.map((z, i) => <div key={i} className="hsRow">
-                        <div className="lbCol">{z[1]}</div>
-                        <div className="lbCol">{z[0]}</div>
+                        <div style={{width: "40%"}} className="lbCol">{z[1]}</div>
+                        <div style={{width: "40%"}} className="lbCol">{z[0]}</div>
                     </div>)
                 }
             </div>

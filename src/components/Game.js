@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
-import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, loadWordLength} from '../helpers.js'
+import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite } from '../helpers.js'
 import './Game.css'
 import { format, endOfDay } from 'date-fns'
 
@@ -55,7 +55,7 @@ export const Game = ({setroute}) => {
                 history: history
             }))
         })
-    }, [])
+    })
 
     React.useEffect(() => {
         document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;
@@ -119,7 +119,22 @@ export const Game = ({setroute}) => {
             }
         }
         if(winner && nickname){
-            dispatch(updateLeaderboard([nickname, format(new Date(), "hh:mm")]))
+            try{
+                const lastload = new Date(parseInt(localStorage.lastload))
+                const now = new Date()
+                const diff = Math.abs(Math.floor((lastload.getTime() - now.getTime()) / 1000))
+                
+                const attemptStr = `${attempt+1}/6`
+                lbwrite({
+                    nick: nickname,
+                    time: diff,
+                    attempt: attemptStr
+                })
+                dispatch(updateLeaderboard([nickname, diff, attemptStr]))
+            }
+            catch(err){
+                console.log(err)
+            }
         }
         if(attempt+1 >= attempts || winner){
             gameOver = "1";
@@ -175,7 +190,7 @@ export const Game = ({setroute}) => {
         }
 
         for(let i = 0; i < wordLength; i++){
-            if(colors[i] != "") continue;
+            if(colors[i] !== "") continue;
             if(targetWord.includes(word[i]) && freq[word[i]] > 0){
                 colors[i] = theme.containedCell
                 freq[word[i]] -= 1
@@ -189,6 +204,7 @@ export const Game = ({setroute}) => {
     }
 
     const resetGame = () => {
+        localStorage.lastload = (new Date()).getTime()
         correctLetters.length = 0
         gameOver = "0"
         removeGameStorage(wordLength)
@@ -229,7 +245,7 @@ export const Game = ({setroute}) => {
                     <>
                     <InfoBox theme={theme} targetWord={targetWord}/>
                     {
-                        gameOver == "1" ? <Timer /> :
+                        gameOver === "1" ? <Timer /> :
                         (fetching ? <div className="warning">Zisťujem . . .</div> : 
                         <div className="warning">{warnMessage}</div>)
                     }
@@ -239,7 +255,6 @@ export const Game = ({setroute}) => {
                     </>
                 )
             }
-            {/* <button onClick={() => resetGame()}>RESET</button> */}
         </div>
     )
 }

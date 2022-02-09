@@ -72,8 +72,8 @@ export const Suggester = () => {
             >
                 Odoslať
             </button>
-            {infMsg}
-            { !goodMsg ? null :
+            <br />
+            { !goodMsg ? infMsg :
             <font style={{color: theme.href}}>{goodMsg}</font>
             }
         </div>

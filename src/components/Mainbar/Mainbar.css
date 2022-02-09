@@ -29,8 +29,8 @@ header {
     justify-content: center;
 }
 .lbCol {
-    width: 6em;
-    font-size: clamp(0.5em, 5vmin, 1em);;
+    font-size: clamp(0.4em, 3vmin, 1em);
+    overflow: hidden;
 }
 
 .title {
@@ -71,10 +71,6 @@ header {
     align-content: center;
     align-items: middle;
     justify-content: center;
-}
-
-.dialog::-webkit-scrollbar{
-    display: none;
 }
 
 .dialog .text {

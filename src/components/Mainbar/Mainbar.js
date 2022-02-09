@@ -11,8 +11,8 @@ import settingsDark from '../../img/settingsDark.png'
 import settingsLight from '../../img/settingsLight.png'
 import lbDark from '../../img/lbDark.png'
 import lbLight from '../../img/lbLight.png'
-import shareLight from '../../img/shareLight.png'
-import shareDark from '../../img/shareDark.png'
+// import shareLight from '../../img/shareLight.png'
+// import shareDark from '../../img/shareDark.png'
 import gold from '../../img/gold.png'
 import silver from '../../img/silver.png'
 import bronze from '../../img/bronze.png'
@@ -20,6 +20,13 @@ import candy from '../../img/candy.png'
 
 import { Tablecell } from '../Playtable/Tablecell.js'
 import { selectLeaderboard } from '../../slices/gameState.js'
+
+
+function getMinSecs(seconds){
+    const min = Math.floor(seconds/60)
+    const sec = seconds % 60
+    return `${min}:${sec < 10 ? "0" : ""}${sec}`
+}
 
 export const Mainbar = ({setroute}) => {
     const [open, setOpen] = React.useState({
@@ -94,8 +101,9 @@ export const Mainbar = ({setroute}) => {
                 lb.length == 0 ? "Prázdna tabuľka": 
                 lb.map((z, i) => <div key={i} className="lbRow">
                     <img src={medals[i] ?? candy} className="icon"/>
-                    <div className="lbCol">{z[0]}</div>
-                    <div className="lbCol" style={{right: '0px'}}>{z[1]}</div>
+                    <div style={{width: "40%"}} className="lbCol">{z[0]}</div>
+                    <div style={{width: "30%"}} className="lbCol">{getMinSecs(z[1])}</div>
+                    <div style={{width: "30%"}}  className="lbCol" style={{right: '0px'}}>{z[2]}</div>
                 </div>)
             }           
         </div>}

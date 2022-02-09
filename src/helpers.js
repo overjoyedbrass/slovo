@@ -1,13 +1,18 @@
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
-async function customFetch(url, nick=""){
-    return await fetch(url, {
+async function customFetch(url, method="GET", data=null){
+    const object = {
+        method: method,
         headers: {
+            'Content-Type': 'application/json',
             authorization: AUTHORIZATION_KEY,
-            nickname: nick
-        }
-    })
+        },
+    }
+    if(method==="POST"){
+        object['body'] = JSON.stringify(data)
+    }
+    return await fetch(url, object)
 }
 
 export function copy2D(array2d){
@@ -75,8 +80,15 @@ export const loadWord = async (length) => {
     }
 
     const slovo = data.word
-    const leaderboard = data.leaderboard
+    const leaderboardData = data.leaderboard
     const history = data.history
+
+    const leaderboard = []
+    // "nick" : [time, attempt]
+    for (const [key, value] of Object.entries(leaderboardData)) {
+        leaderboard.push([key, value[0], value[1]])
+    }
+    leaderboard.sort((a, b) => a[1]-b[1])
 
     const lastWord = localStorage.getItem(`lastWord${length}`)
     let reset = false
@@ -87,11 +99,17 @@ export const loadWord = async (length) => {
     return [slovo, reset, leaderboard, history]
 }
 
-export async function wordCheck(slovo, nick) {
+export async function wordCheck(slovo) {
     const url = `${BASE_URL}/check?word=${slovo.toLowerCase()}`
-    const response = await customFetch(url, nick)
+    const response = await customFetch(url)
     const text = await response.text()
     return text === "True"
+}
+
+export async function lbwrite(data) {
+    const url = `${BASE_URL}/lbwrite`
+    const response = await customFetch(url, "POST", data)
+    return response
 }
 
 //dont want to do localStorage.clear(), maybe i will wantt to keep some data in future

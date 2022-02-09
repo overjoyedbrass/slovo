@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { suggestWord } from "../../helpers";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
 
@@ -39,6 +38,7 @@ export const NicknamePicker = () => {
             return
         }
         localStorage.nickname = nick
+        setNick("")
         setGoodMsg("Prezývka nastavená. Pri ďalšom uhádnutí Vás zapíšem pod týmto menom")
     }
     
@@ -51,6 +51,7 @@ export const NicknamePicker = () => {
                 maxLength={MAX_LENGTH} 
                 onChange={textAreaChange} 
                 spellCheck="false"
+                value={nick}
                 style={{backgroundColor: theme.bgColor}}
                 type="text"
                 onKeyDown={(e) => enterPress(e)}
@@ -59,10 +60,10 @@ export const NicknamePicker = () => {
                 style={{backgroundColor: theme.bgColor}}
                 onClick={buttonClick}
             >
-                Zmeniť
+                {currentNick ? "Zmeniť" : "Nastaviť"}
             </button>
-            {infMsg}
-            { !goodMsg ? null :
+            <br />
+            { !goodMsg ? infMsg :
             <font style={{color: theme.href}}>{goodMsg}</font>
             }
         </div>
