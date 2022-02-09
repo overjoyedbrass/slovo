@@ -5,24 +5,19 @@ import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
 
 
-const SUGGEST_LIMIT = 2
+const MAX_LENGTH = 10
+const MIN_LENGTH = 3
 
-function datesAre10MApart(d1, d2){
-    const diff = d1 - d2
-    var minutes = (diff/1000)/60
-    return minutes >= SUGGEST_LIMIT
-}
-
-export const Suggester = () => {
+export const NicknamePicker = () => {
     const [infMsg, setInfMsg] = React.useState("")
     const [goodMsg, setGoodMsg] = React.useState("")
-    const [word, setWord] = React.useState("")
+    const [nick, setNick] = React.useState("")
     const theme = themes[useSelector(selectCurrentTheme)]
 
+    const currentNick = localStorage.nickname
+
     const textAreaChange = event => {
-        setWord(
-            event.target.value.replace(/[^a-zA-Z]/, '')
-        )
+        setNick(event.target.value.replace(/[^a-zA-Z]/, ''))
         setGoodMsg("")
         setInfMsg("")
     }
@@ -33,45 +28,39 @@ export const Suggester = () => {
     }
     const buttonClick = (e) => {
         setInfMsg("")
-        if(word.length < 5){
-            setInfMsg("slovo musí byť dĺžky 5")
+        if(nick.length < MIN_LENGTH){
+            setInfMsg("Nickname musí byť dĺžky aspoň 3")
             setGoodMsg("")
             return
         }
-        const teraz = new Date()
-        const last = new Date(parseInt(localStorage.lastSuggest))
-
-        if(!localStorage.lastSuggest ||datesAre10MApart(teraz, last)){
-            suggestWord(word)
-            setWord("")
-            setGoodMsg("Úspešné odoslané")
-            localStorage.lastSuggest = ''+teraz.getTime()
+        if(nick === currentNick){
+            setInfMsg("Nickname je rovnaký ako predchádzajúci")
+            setGoodMsg("")
             return
         }
-        setInfMsg(`Môžete navrhnúť slovo iba raz za ${SUGGEST_LIMIT} minúty`)
+        localStorage.nickname = nick
+        setGoodMsg("Prezývka nastavená. Pri ďalšom uhádnutí Vás zapíšem pod týmto menom")
     }
     
     return (
         <>
         <div className="container">
-            <h3>Navrhni slovo do hry</h3>
+            <h3>{currentNick ? `Nickname: ${currentNick}` : "Nastavíť prezývku"}</h3>
             <div style={{display: "flex"}}>
                 <input
-                    placeholder={"slovo na 5"}
-                    maxLength={5} 
+                    placeholder={"želvák"}
+                    maxLength={MAX_LENGTH} 
                     onChange={textAreaChange} 
-                    value={word}
                     spellCheck="false"
                     style={{backgroundColor: theme.bgColor}}
                     type="text"
-                    pattern="[a-zA-Z]*"
                     onKeyDown={(e) => enterPress(e)}
                 />
                 <button 
                     style={{backgroundColor: theme.bgColor}}
                     onClick={buttonClick}
                 >
-                    Odoslať
+                    Zmeniť
                 </button>
             </div>
             {infMsg}

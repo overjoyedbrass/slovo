@@ -1,0 +1,17 @@
+.introduction {
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.blockText {
+    max-width: 500px;
+    margin: 0 3em 0 3em;
+}
+
+.playButton {
+    padding: 0.3em 1em 0.3em 1em;
+    border-radius: 2em;
+}

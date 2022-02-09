@@ -10,9 +10,12 @@ import { themes } from '../../theme/themes.js'
 import homeDark from '../../img/homeDark.png'
 import homeLight from '../../img/homeLight.png'
 
+import { selectHistory } from '../../slices/gameState.js'
+
 import './Settings.css'
 import { loadGameOver, loadWordLength, removeGameStorage } from '../../helpers'
 import { Suggester } from './Suggester'
+import { NicknamePicker } from './NicknamePicker'
 
 export const Settings = ({setroute}) => {
     const keyTheme = useSelector(selectCurrentTheme)
@@ -20,38 +23,37 @@ export const Settings = ({setroute}) => {
     const wordLength = loadWordLength()
     const gameOver = loadGameOver(wordLength)
 
-    const [refresh, doRefresh] = React.useState(true)
+
+    const history = useSelector(selectHistory).slice(1)
+    
 
     React.useEffect(() => {
         document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;
     }, [theme])
 
     return (
-        <>
-        <div className="mainbar">
+        <div className="settingsPage">
+            <header>
+                <div className="menu">
+                    <img onClick={() => setroute("game")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
+                </div>
+                <div className="title">Nástroje</div>
 
-
-            <img onClick={() => setroute("game")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
-            <div className="title">Nástroje</div>
-            <ThemeSwitch />
-        </div>
-        <div className="settingsContent">
+                <div className="menu">
+                    <ThemeSwitch />
+                </div>
+            </header>
+            <div className="container">
+                <h3>Predchádzajúce slová</h3>
+                {
+                    history.map((z, i) => <div key={i} className="lbRow">
+                        <div className="lbCol">{z[1]}</div>
+                        <div className="lbCol">{z[0]}</div>
+                    </div>)
+                }
+            </div>
             <Suggester />
-
-            
-            {gameOver === "0" ? null :
-                <button 
-                    onClick={() => {
-                        removeGameStorage(wordLength)
-                        doRefresh(!refresh)
-                    }} 
-                    className="deleteButton" 
-                    style={{backgroundColor: theme.warn, color: theme.textColor}}
-                >
-                    Vymazať dáta hry
-                </button>
-            }
+            <NicknamePicker />
         </div>
-        </>
         )
 }

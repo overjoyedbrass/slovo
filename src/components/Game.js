@@ -4,6 +4,7 @@ import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
 import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, loadWordLength} from '../helpers.js'
 import './Game.css'
+import { format } from 'date-fns'
 
 import { themes } from '../theme/themes.js'
 import { selectCurrentTheme } from '../theme/themeSlice.js'
@@ -11,7 +12,7 @@ import { Playtable } from './Playtable/Playtable.js'
 import { Keyboard } from './Keyboard/Keyboard.js'
 import { InfoBox } from './InfoBox.js'
 
-import { saveNewWord, selectCurrentLength, selectTargetWord } from '../slices/targetWords.js'
+import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord } from '../slices/gameState.js'
 
 function getUsedLetters(array2D, attempt){
     const letters = []
@@ -29,6 +30,8 @@ export const Game = ({setroute}) => {
     const wordLength = useSelector(selectCurrentLength)
     const targetWord = useSelector(selectTargetWord)
     const correctLetters = loadCorrect(wordLength)
+    const nickname = localStorage.nickname ?? "12345"
+
     var gameOver = loadGameOver(wordLength)
 
     const [fetching, setFecthing] = React.useState(false)
@@ -40,13 +43,17 @@ export const Game = ({setroute}) => {
     React.useEffect(() => {
         if(targetWord !== "") return
         loadWord(wordLength).then(o => {
-            const slovo = o[0]
-            const newWord = o[1]
+            const [slovo, newWord, leaderboard, history] = o
 
-            dispatch(saveNewWord(slovo))
             if(newWord){
                 resetGame()
             }
+            
+            dispatch(saveGameState({
+                word: slovo,
+                leaderboard: leaderboard,
+                history: history
+            }))
         })
     }, [])
 
@@ -96,22 +103,25 @@ export const Game = ({setroute}) => {
         const slovo = table[attempt].join("")
 
         setFecthing(true)
-        const goodWord = await wordCheck(slovo)
+        const goodWord = await wordCheck(slovo, nickname)
         setFecthing(false)
         if(!goodWord){
             setWarnMessage("Slovo nie je v zozname")
             return
         }
-        let finish = true;
+        let winner = true;
         for(let i = 0; i < wordLength; i++){
             if(table[attempt][i] === targetWord[i]){
                 addCorrectLetter(table[attempt][i])
             }
             else{
-                finish = false;
+                winner = false;
             }
         }
-        if(attempt+1 >= attempts || finish){
+        if(winner && nickname){
+            dispatch(updateLeaderboard([nickname, format(new Date(), "hh:mm")]))
+        }
+        if(attempt+1 >= attempts || winner){
             gameOver = "1";
             saveToStorage("gameOver", wordLength, gameOver)
         }
@@ -119,7 +129,6 @@ export const Game = ({setroute}) => {
     }
 
     const addLetter = letter => {
-        // console.log("addLetter", letter)
         letter = letter.toLowerCase()
         if(!isLetter(letter)){
             return

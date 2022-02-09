@@ -1,10 +1,11 @@
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
-async function customFetch(url){
+async function customFetch(url, nick=""){
     return await fetch(url, {
         headers: {
-            authorization: AUTHORIZATION_KEY
+            authorization: AUTHORIZATION_KEY,
+            nickname: nick
         }
     })
 }
@@ -29,6 +30,7 @@ export const loadTable = (rows, cols) => {
         return Array(rows).fill(0).map(x => Array(cols).fill(""))
     }
 }
+
 export const loadAttempt = (length) => {
     const number = localStorage.getItem(`attempt${length}`)
     return number ? parseInt(number) : 0
@@ -64,9 +66,17 @@ export const loadWord = async (length) => {
 
     const url = `${BASE_URL}/word?length=${length}`
     const response = await customFetch(url)
-    var slovo = await response.text()
-    slovo = slovo.toLocaleLowerCase()
-    
+    var data = await response.text()
+    try{
+        data = JSON.parse(data)
+    }
+    catch(err){
+        return null
+    }
+
+    const slovo = data.word
+    const leaderboard = data.leaderboard
+    const history = data.history
 
     const lastWord = localStorage.getItem(`lastWord${length}`)
     let reset = false
@@ -74,12 +84,12 @@ export const loadWord = async (length) => {
         reset = true
     }
     localStorage.setItem(`lastWord${length}`, slovo)
-    return [slovo, reset]
+    return [slovo, reset, leaderboard, history]
 }
 
-export async function wordCheck(slovo) {
+export async function wordCheck(slovo, nick) {
     const url = `${BASE_URL}/check?word=${slovo.toLowerCase()}`
-    const response = await customFetch(url)
+    const response = await customFetch(url, nick)
     const text = await response.text()
     return text === "True"
 }
