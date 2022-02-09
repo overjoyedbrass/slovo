@@ -46,7 +46,7 @@ export const Settings = ({setroute}) => {
             <div className="container">
                 <h3>Predchádzajúce slová</h3>
                 {
-                    history.map((z, i) => <div key={i} className="lbRow">
+                    history.map((z, i) => <div key={i} className="hsRow">
                         <div className="lbCol">{z[1]}</div>
                         <div className="lbCol">{z[0]}</div>
                     </div>)

@@ -14,16 +14,19 @@
     cursor: pointer;
     
 }
+.hsRow {
+    display: flex;
+}
 
 .container {
     border: 1px solid;
-    width: clamp(250px, 60vmin, 500px);
+    max-width: 500px;
+    width: 80%;
     padding: 1em;
     margin-top: 1.5em;
     border-radius: 1.5em;
-    position: relative;
     min-height: 8em;
-    overflow: auto;
+    overflow-wrap: break-word;
 }
 
 input {

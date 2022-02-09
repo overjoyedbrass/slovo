@@ -95,7 +95,6 @@ export const Mainbar = ({setroute}) => {
                 lb.map((z, i) => <div key={i} className="lbRow">
                     <img src={medals[i] ?? candy} className="icon"/>
                     <div className="lbCol">{z[0]}</div>
-                    –
                     <div className="lbCol" style={{right: '0px'}}>{z[1]}</div>
                 </div>)
             }           

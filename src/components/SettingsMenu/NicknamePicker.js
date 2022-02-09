@@ -46,23 +46,21 @@ export const NicknamePicker = () => {
         <>
         <div className="container">
             <h3>{currentNick ? `Nickname: ${currentNick}` : "Nastavíť prezývku"}</h3>
-            <div style={{display: "flex"}}>
-                <input
-                    placeholder={"želvák"}
-                    maxLength={MAX_LENGTH} 
-                    onChange={textAreaChange} 
-                    spellCheck="false"
-                    style={{backgroundColor: theme.bgColor}}
-                    type="text"
-                    onKeyDown={(e) => enterPress(e)}
-                />
-                <button 
-                    style={{backgroundColor: theme.bgColor}}
-                    onClick={buttonClick}
-                >
-                    Zmeniť
-                </button>
-            </div>
+            <input
+                placeholder={"želvák"}
+                maxLength={MAX_LENGTH} 
+                onChange={textAreaChange} 
+                spellCheck="false"
+                style={{backgroundColor: theme.bgColor}}
+                type="text"
+                onKeyDown={(e) => enterPress(e)}
+            />
+            <button 
+                style={{backgroundColor: theme.bgColor}}
+                onClick={buttonClick}
+            >
+                Zmeniť
+            </button>
             {infMsg}
             { !goodMsg ? null :
             <font style={{color: theme.href}}>{goodMsg}</font>

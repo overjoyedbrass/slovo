@@ -55,25 +55,23 @@ export const Suggester = () => {
         <>
         <div className="container">
             <h3>Navrhni slovo do hry</h3>
-            <div style={{display: "flex"}}>
-                <input
-                    placeholder={"slovo na 5"}
-                    maxLength={5} 
-                    onChange={textAreaChange} 
-                    value={word}
-                    spellCheck="false"
-                    style={{backgroundColor: theme.bgColor}}
-                    type="text"
-                    pattern="[a-zA-Z]*"
-                    onKeyDown={(e) => enterPress(e)}
-                />
-                <button 
-                    style={{backgroundColor: theme.bgColor}}
-                    onClick={buttonClick}
-                >
-                    Odoslať
-                </button>
-            </div>
+            <input
+                placeholder={"slovo na 5"}
+                maxLength={5} 
+                onChange={textAreaChange} 
+                value={word}
+                spellCheck="false"
+                style={{backgroundColor: theme.bgColor}}
+                type="text"
+                pattern="[a-zA-Z]*"
+                onKeyDown={(e) => enterPress(e)}
+            />
+            <button 
+                style={{backgroundColor: theme.bgColor}}
+                onClick={buttonClick}
+            >
+                Odoslať
+            </button>
             {infMsg}
             { !goodMsg ? null :
             <font style={{color: theme.href}}>{goodMsg}</font>
