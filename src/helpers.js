@@ -15,6 +15,10 @@ async function customFetch(url, method="GET", data=null){
     return await fetch(url, object)
 }
 
+function hashCode(s){
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
+}
+
 export function copy2D(array2d){
     var newArray = []
     for (let i = 0; i < array2d.length; i++){
@@ -92,10 +96,10 @@ export const loadWord = async (length) => {
 
     const lastWord = localStorage.getItem(`lastWord${length}`)
     let reset = false
-    if(slovo !== lastWord){
+    if(hashCode(slovo) !== parseInt(lastWord)){
         reset = true
     }
-    localStorage.setItem(`lastWord${length}`, slovo)
+    localStorage.setItem(`lastWord${length}`, hashCode(slovo))
     return [slovo, reset, leaderboard, history]
 }
 
