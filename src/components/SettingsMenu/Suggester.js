@@ -21,7 +21,7 @@ export const Suggester = () => {
 
     const textAreaChange = event => {
         setWord(
-            event.target.value.replace(/[^a-zA-Z]/, '')
+            event.target.value
         )
         setGoodMsg("")
         setInfMsg("")

@@ -13,14 +13,19 @@
     justify-content: center;
 
     min-width: 2.5em;
-    height: 3.5em;
-    line-height: 3.5em;
+    height: 3em;
+    line-height: 3em;
 
     font-weight: bold;
-    text-align: center;
     
     user-select: none;
 
     display: inline-block;
     cursor: pointer;
+}
+
+.firstRow .keyCell {
+    min-width: 2em;
+    height: 2em;
+    line-height: 2em;
 }

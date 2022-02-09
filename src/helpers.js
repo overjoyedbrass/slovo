@@ -1,6 +1,8 @@
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
+const DIKARITIKA = "ľščťžýáíéď"
+
 async function customFetch(url, method="GET", data=null){
     const object = {
         method: method,
@@ -27,7 +29,7 @@ export function copy2D(array2d){
     return newArray
 }
 export function isLetter(str) {
-    return str.length === 1 && str.match(/[a-z]/i);
+    return str.length === 1 && str.match(/[a-z]/i) || DIKARITIKA.includes(str);
 }
 
 export const loadTable = (rows, cols) => {
