@@ -4,7 +4,7 @@ import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
 import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, loadWordLength} from '../helpers.js'
 import './Game.css'
-import { format } from 'date-fns'
+import { format, endOfDay } from 'date-fns'
 
 import { themes } from '../theme/themes.js'
 import { selectCurrentTheme } from '../theme/themeSlice.js'
@@ -229,8 +229,9 @@ export const Game = ({setroute}) => {
                     <>
                     <InfoBox theme={theme} targetWord={targetWord}/>
                     {
-                        fetching ? <div className="warning">Zisťujem . . .</div> : 
-                        <div className="warning">{warnMessage}</div>
+                        gameOver == "1" ? <Timer /> :
+                        (fetching ? <div className="warning">Zisťujem . . .</div> : 
+                        <div className="warning">{warnMessage}</div>)
                     }
 
                     <Playtable gameState={table} theme={theme} colorFunction={getCellRowColors}/>
@@ -240,5 +241,16 @@ export const Game = ({setroute}) => {
             }
             {/* <button onClick={() => resetGame()}>RESET</button> */}
         </div>
+    )
+}
+
+const Timer = () => {
+    const [time, setTime] = React.useState(new Date())
+    React.useEffect(() => {
+        const interval = setInterval(() => setTime(new Date()), 1000)
+        return () => clearInterval(interval)
+    })
+    return (
+        <div className="warning">Nové slovo: {format(endOfDay(time)-time, "HH:mm:ss")}</div>
     )
 }

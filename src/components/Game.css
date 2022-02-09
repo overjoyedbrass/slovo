@@ -8,15 +8,14 @@
 }
 
 .infoBox {
-    margin-top: 2vmin;
+    margin-top: 1em;
     min-height: clamp(1em, 5vmin, 1.2em);
     text-align: center;
     line-height: 2vmin;
-    font-size: clamp(1em, 5vmin, 1.2em);
+    font-size: clamp(0.8em, 5vmin, 1.2em);
 }
 .infoBox a{
     text-decoration: none;
-    padding: 5px;
     font-weight: bold;
     font-size: 1.1em;
 }
