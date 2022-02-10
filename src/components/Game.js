@@ -183,14 +183,14 @@ export const Game = ({setroute}) => {
         if(index >= attempt){
             return colors
         }
-        let copyRow = ""
+        let copyRow = Array(wordLength).fill("")
         const word = table[index].join("")
         const freq = letterFrequency(targetWord)
 
         for(let i = 0; i < wordLength; i++){
             if(targetWord[i] === word[i]){
                 colors[i] = theme.rightCell
-                copyRow += "🟩"
+                copyRow[i] = "🟩"
                 freq[word[i]] -= 1
             }
         }
@@ -199,15 +199,15 @@ export const Game = ({setroute}) => {
             if(colors[i] !== "") continue;
             if(targetWord.includes(word[i]) && freq[word[i]] > 0){
                 colors[i] = theme.containedCell
-                copyRow += "🟨"
+                copyRow[i] = "🟨"
                 freq[word[i]] -= 1
             }
             else {
                 colors[i] = theme.wrongCell
-                copyRow += "⬛"
+                copyRow[i] = "⬛"
             }
         }
-        strtable[index] = copyRow
+        strtable[index] = copyRow.join('')
         return colors
     }
 
@@ -236,8 +236,10 @@ export const Game = ({setroute}) => {
         }
     }
     const rowColors = []
-    for(let i = 0; i < attempts; i++){
-        rowColors.push(getRowCellColors(i))
+    if(targetWord){
+        for(let i = 0; i < attempts; i++){
+            rowColors.push(getRowCellColors(i))
+        }
     }
     return (
         <div className="game">

@@ -53,6 +53,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
     const theme = themes[keyTheme]
     
     const go = localStorage.getItem(`gameOver${l}`) === "1"
+    console.log("strtable", strtable)
     const copyText = `Slovo ${format(new Date(), "d.M.")}  (${strtable.length}/6)\n\n${strtable.join('\n')}`
 
     return (
