@@ -25,7 +25,7 @@ export const themes = {
         bgColor: "#333333",
         textColor: "white",
         
-        rightCell: '#009900',
+        rightCell: '#33cc33',
         containedCell: 'orange',
         wrongCell: 'grey',
 

@@ -1,7 +1,7 @@
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
-const DIKARITIKA = "ľščťžýáíéď"
+const DIKARITIKA = 'áéíóúťšďľčňý'
 
 async function customFetch(url, method="GET", data=null){
     const object = {

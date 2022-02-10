@@ -27,7 +27,7 @@
     margin-top: 1.5em;
     border-radius: 1.5em;
     min-height: 8em;
-    overflow-wrap: break-word;
+    overflow: auto;
 }
 
 input {

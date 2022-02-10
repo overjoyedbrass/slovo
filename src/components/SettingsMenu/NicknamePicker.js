@@ -47,7 +47,7 @@ export const NicknamePicker = () => {
         <div className="container">
             <h3>{currentNick ? `Nickname: ${currentNick}` : "Nastavíť prezývku"}</h3>
             <input
-                placeholder={"želvák"}
+                placeholder={"zelvak"}
                 maxLength={MAX_LENGTH} 
                 onChange={textAreaChange} 
                 spellCheck="false"

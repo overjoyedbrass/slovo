@@ -40,6 +40,8 @@ export const Game = ({setroute}) => {
     const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
     const dispatch = useDispatch()
 
+    const colorsForCopy = []
+
     React.useEffect(() => {
         if(targetWord !== "") return
         loadWord(wordLength).then(o => {
@@ -174,8 +176,10 @@ export const Game = ({setroute}) => {
 
     const usedLetters = getUsedLetters(table, attempt)
 
-    const getCellRowColors = index => {
+    const getRowCellColors = index => {
         const colors = Array(wordLength).fill("")
+        let copyRow = Array(wordLength).fill("")
+
         if(index >= attempt){
             return colors
         }
@@ -185,6 +189,7 @@ export const Game = ({setroute}) => {
         for(let i = 0; i < wordLength; i++){
             if(targetWord[i] === word[i]){
                 colors[i] = theme.rightCell
+                copyRow[i] = "🟩"
                 freq[word[i]] -= 1
             }
         }
@@ -193,13 +198,15 @@ export const Game = ({setroute}) => {
             if(colors[i] !== "") continue;
             if(targetWord.includes(word[i]) && freq[word[i]] > 0){
                 colors[i] = theme.containedCell
+                copyRow[i] = "🟨"
                 freq[word[i]] -= 1
             }
             else {
                 colors[i] = theme.wrongCell
+                copyRow[i] = "⬛"
             }
         }
-
+        colorsForCopy[index] = copyRow
         return colors
     }
 
@@ -230,7 +237,7 @@ export const Game = ({setroute}) => {
 
     return (
         <div className="game">
-            <Mainbar setroute={setroute}/>
+            <Mainbar copycolors={colorsForCopy} setroute={setroute}/>
 
             {
                 !targetWord ? 
@@ -245,12 +252,12 @@ export const Game = ({setroute}) => {
                     <>
                     <InfoBox theme={theme} targetWord={targetWord}/>
                     {
-                        gameOver === "1" ? <Timer /> :
+                        gameOver === "1" ? <Timer color={theme.textColor}/> :
                         (fetching ? <div className="warning">Zisťujem . . .</div> : 
                         <div className="warning">{warnMessage}</div>)
                     }
 
-                    <Playtable gameState={table} theme={theme} colorFunction={getCellRowColors}/>
+                    <Playtable gameState={table} theme={theme} colorFunction={getRowCellColors}/>
                     <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
                     </>
                 )
@@ -259,13 +266,31 @@ export const Game = ({setroute}) => {
     )
 }
 
-const Timer = () => {
+const Timer = ({color}) => {
     const [time, setTime] = React.useState(new Date())
+    const eod = endOfDay(time)
+    const h = eod.getHours()-time.getHours()
+    const m = eod.getMinutes()-time.getMinutes()
+    const s = eod.getSeconds()-time.getSeconds()
+
+    let refresh = true
+    let content
+    if (h === 0 && m === 0 && s === 0){
+        content = <a style={{color: color}} href="/">Obnoviť</a>
+        refresh = false
+    }
+    else {
+        content = `Nové slovo: ${h < 10 ? "0"+h : h}:${m < 10 ? "0"+m : m}:${s < 10 ? "0"+s : s}`
+    }
+
     React.useEffect(() => {
-        const interval = setInterval(() => setTime(new Date()), 1000)
-        return () => clearInterval(interval)
+        if(refresh){
+            const interval = setInterval(() => setTime(new Date()), 1000)
+            return () => clearInterval(interval)
+        }
     })
+
     return (
-        <div className="warning">Nové slovo: {format(endOfDay(time)-time, "HH:mm:ss")}</div>
+        <div className="warning">{ content }</div>
     )
 }
