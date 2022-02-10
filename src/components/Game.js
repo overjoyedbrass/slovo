@@ -12,7 +12,7 @@ import { Playtable } from './Playtable/Playtable.js'
 import { Keyboard } from './Keyboard/Keyboard.js'
 import { InfoBox } from './InfoBox.js'
 
-import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord } from '../slices/gameState.js'
+import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord, setGameOver } from '../slices/gameState.js'
 
 function getUsedLetters(array2D, attempt){
     const letters = []
@@ -36,11 +36,12 @@ export const Game = ({setroute}) => {
 
     const [fetching, setFecthing] = React.useState(false)
     const [warnMessage, setWarnMessage] = React.useState("")
+    
     const [table, setTable] = React.useState(loadTable(attempts, wordLength))
     const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
     const dispatch = useDispatch()
 
-    const colorsForCopy = []
+    const strtable = []
 
     React.useEffect(() => {
         if(targetWord !== "") return
@@ -178,18 +179,18 @@ export const Game = ({setroute}) => {
 
     const getRowCellColors = index => {
         const colors = Array(wordLength).fill("")
-        let copyRow = Array(wordLength).fill("")
 
         if(index >= attempt){
             return colors
         }
+        let copyRow = ""
         const word = table[index].join("")
         const freq = letterFrequency(targetWord)
 
         for(let i = 0; i < wordLength; i++){
             if(targetWord[i] === word[i]){
                 colors[i] = theme.rightCell
-                copyRow[i] = "🟩"
+                copyRow += "🟩"
                 freq[word[i]] -= 1
             }
         }
@@ -198,15 +199,15 @@ export const Game = ({setroute}) => {
             if(colors[i] !== "") continue;
             if(targetWord.includes(word[i]) && freq[word[i]] > 0){
                 colors[i] = theme.containedCell
-                copyRow[i] = "🟨"
+                copyRow += "🟨"
                 freq[word[i]] -= 1
             }
             else {
                 colors[i] = theme.wrongCell
-                copyRow[i] = "⬛"
+                copyRow += "⬛"
             }
         }
-        colorsForCopy[index] = copyRow
+        strtable[index] = copyRow
         return colors
     }
 
@@ -234,11 +235,13 @@ export const Game = ({setroute}) => {
             return theme.wrongCell
         }
     }
-
+    const rowColors = []
+    for(let i = 0; i < attempts; i++){
+        rowColors.push(getRowCellColors(i))
+    }
     return (
         <div className="game">
-            <Mainbar copycolors={colorsForCopy} setroute={setroute}/>
-
+            <Mainbar targetWord={targetWord} strtable={strtable} setroute={setroute}/>
             {
                 !targetWord ? 
                 (
@@ -257,7 +260,7 @@ export const Game = ({setroute}) => {
                         <div className="warning">{warnMessage}</div>)
                     }
 
-                    <Playtable gameState={table} theme={theme} colorFunction={getRowCellColors}/>
+                    <Playtable gameState={table} theme={theme} colors={rowColors}/>
                     <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
                     </>
                 )

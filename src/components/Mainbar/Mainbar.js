@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../../theme/themeSlice'
 import { themes } from '../../theme/themes.js'
 import { selectCurrentLength } from '../../slices/gameState.js'
-
 import './Mainbar.css'
 
 import infoLight from '../../img/infoLight.png'
@@ -29,6 +28,7 @@ function getMinSecs(seconds){
 }
 
 async function copyTextToClipboard(text) {
+    await text
     if ('clipboard' in navigator) {
         return await navigator.clipboard.writeText(text);
     } 
@@ -38,28 +38,29 @@ async function copyTextToClipboard(text) {
 }
 
 
-export const Mainbar = ({copycolors, setroute}) => {
+export const Mainbar = ({targetWord, strtable, setroute}) => {
     const [open, setOpen] = React.useState({
         help: false,
         stats: false,
     })
-    const length = useSelector(selectCurrentLength)
-    const gameOver = localStorage.getItem(`gameOver${length}`)
 
+
+    const l = useSelector(selectCurrentLength)
     const medals = [gold, silver, bronze]
     const lb = useSelector(selectLeaderboard)
     
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
-
-    const copyText = `Slovo ${format(new Date(), "d.M.")}  (${copycolors.length}/6)\n\n${copycolors.map(m => m.join("")).join('\n')}`
+    
+    const go = localStorage.getItem(`gameOver${l}`) === "1"
+    const copyText = `Slovo ${format(new Date(), "d.M.")}  (${strtable.length}/6)\n\n${strtable.join('\n')}`
 
     return (
         <>
         <header>
             <div className="menu">
                 <img onClick={() => setOpen({help: !open.help, stats: false})}  className="icon" src={keyTheme === "dark" ? infoDark : infoLight} />
-                <CopyToClipBoard text={copyText} gameover={gameOver} theme={keyTheme}/>
+                {targetWord ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
                 
             </div>
 
@@ -127,12 +128,11 @@ export const Mainbar = ({copycolors, setroute}) => {
 }
 
 
-const CopyToClipBoard = ({text, gameover, theme}) => {
+const CopyToClipBoard = ({text, theme}) => {
     const [open, setOpen] = React.useState(false)
 
-    const makeCopy = () => {
-        const copyText = text
-        copyTextToClipboard(copyText)
+    const makeCopy = async () => {
+        await copyTextToClipboard(text)
         setOpen(true)
         setTimeout(() => {
             setOpen(false)
@@ -142,7 +142,7 @@ const CopyToClipBoard = ({text, gameover, theme}) => {
 
     return (
         <>
-        { gameover === "1" ? <img onClick={() => makeCopy()}  className="icon" src={theme === "dark" ? shareDark : shareLight} /> : null}
+        <img onClick={() => makeCopy()}  className="icon" src={theme === "dark" ? shareDark : shareLight} />
         {open ? <div className="notification">Skopírované</div> : null}
         </>
     )

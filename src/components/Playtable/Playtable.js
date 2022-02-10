@@ -7,12 +7,12 @@ import { selectCurrentTheme } from '../../theme/themeSlice'
 import { themes } from '../../theme/themes'
 
 
-export const Playtable = ({gameState, colorFunction}) => {
+export const Playtable = ({gameState, colors}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
     return (
         <div className="playtable">{
             gameState.map((row, rowIndex) => {
-                const rowColors = colorFunction(rowIndex)
+                const rowColors = colors[rowIndex]
                 return (
                     <div key={rowIndex} className={"playtableRow"}>{
                         row.map( (l, colIndex) => 

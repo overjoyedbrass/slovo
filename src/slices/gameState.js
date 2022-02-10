@@ -29,7 +29,7 @@ export const gameStateSlice = createSlice({
 })
 
 export default gameStateSlice.reducer
-export const { saveGameState, updateLeaderboard } = gameStateSlice.actions
+export const { saveGameState, updateLeaderboard, setGameOver } = gameStateSlice.actions
 
 export const selectCurrentLength = state => state.gameState.currentLength
 
