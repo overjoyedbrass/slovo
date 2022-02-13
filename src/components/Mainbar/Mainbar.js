@@ -48,11 +48,12 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
     const l = useSelector(selectCurrentLength)
     const medals = [gold, silver, bronze]
     const lb = useSelector(selectLeaderboard)
-    
+
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
     
-    const go = localStorage.getItem(`gameOver${l}`) === "1"
+    const firstTry = localStorage.getItem(`firstTry${l}`) === "1"
+    const win = localStorage.getItem(`winner${l}`) === "1"
     
     const copyText = `Slovo ${format(new Date(), "d.M.")}  (${strtable.length}/6)\n\n${strtable.join('\n')}`
 
@@ -60,16 +61,16 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
         <>
         <header>
             <div className="menu">
-                <img onClick={() => setOpen({help: !open.help, stats: false})}  className="icon" src={keyTheme === "dark" ? infoDark : infoLight} />
-                {targetWord && go ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
+                <img alt="infoicon" onClick={() => setOpen({help: !open.help, stats: false})}  className="icon" src={keyTheme === "dark" ? infoDark : infoLight} />
+                {targetWord && win && firstTry ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
                 
             </div>
 
             <div className="title">SLOVO</div>
 
             <div className="menu">
-                <img onClick={() => setOpen({help: false, stats: !open.stats})} className="icon" src={keyTheme === "dark" ? lbDark : lbLight} />
-                <img onClick={() => setroute("settings")} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} />
+                <img alt="lightbulb" onClick={() => setOpen({help: false, stats: !open.stats})} className="icon" src={keyTheme === "dark" ? lbDark : lbLight} />
+                <img alt="cogwheel" onClick={() => setroute("settings")} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} />
             </div>
         </header>
         {!open.help ? null :
@@ -81,7 +82,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
                 Po každom hádani sa zmeni farba políčka podľa toho ako blízko bol váš pokus.
                 <br />
                 <h3>Príklad: </h3>
-                <div className="playTableRow">
+                <div className="playtableRow">
                     <Tablecell letter={"P"} color={theme.rightCell}/>
                     <Tablecell letter={"E"} />
                     <Tablecell letter={"T"} />
@@ -90,7 +91,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
                 </div>
                 <p>Písmeno P je na správnom mieste</p>
 
-                <div className="playTableRow">
+                <div className="playtableRow">
                     <Tablecell letter={"S"} />
                     <Tablecell letter={"U"} />
                     <Tablecell letter={"S"} />
@@ -99,7 +100,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
                 </div>
                 <p>Písmeno E sa nachádza na inom mieste</p>
 
-                <div className="playTableRow">
+                <div className="playtableRow">
                     <Tablecell letter={"A"} />
                     <Tablecell letter={"K"} color={theme.wrongCell}/>
                     <Tablecell letter={"O"} />
@@ -115,12 +116,12 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
         <div style={{backgroundColor: theme.dialogColor, borderColor: theme.textColor}} onClick={() => setOpen({help: false, stats: false})} className="dialog stats">
             <h2 style={{ textAlign: "center" }}>Dnešná tabuľka</h2>
             {
-                lb.length == 0 ? "Prázdna tabuľka": 
+                lb.length === 0 ? "Prázdna tabuľka": 
                 lb.map((z, i) => <div key={i} className="lbRow">
-                    <img src={medals[i] ?? candy} className="icon"/>
+                    <img alt="medal" src={medals[i] ?? candy} className="icon"/>
                     <div style={{width: "40%"}} className="lbCol">{z[0]}</div>
                     <div style={{width: "30%"}} className="lbCol">{getMinSecs(z[1])}</div>
-                    <div style={{width: "30%"}}  className="lbCol" style={{right: '0px'}}>{z[2]}</div>
+                    <div style={{width: "30%", right: "0px"}}  className="lbCol">{z[2]}</div>
                 </div>)
             }           
         </div>}
@@ -143,7 +144,7 @@ const CopyToClipBoard = ({text, theme}) => {
 
     return (
         <>
-        <img onClick={() => makeCopy()}  className="icon" src={theme === "dark" ? shareDark : shareLight} />
+        <img alt="shareicon" onClick={() => makeCopy()}  className="icon" src={theme === "dark" ? shareDark : shareLight} />
         {open ? <div className="notification">Skopírované</div> : null}
         </>
     )

@@ -34,7 +34,7 @@ export const Suggester = () => {
     const buttonClick = (e) => {
         setInfMsg("")
         if(word.length < 5){
-            setInfMsg("slovo musí byť dĺžky 5")
+            setInfMsg("slovo musí byť aspoň dĺžky 5")
             setGoodMsg("")
             return
         }
@@ -56,8 +56,8 @@ export const Suggester = () => {
         <div className="container">
             <h3>Navrhni slovo do hry</h3>
             <input
-                placeholder={"slovo na 5"}
-                maxLength={5} 
+                placeholder={"ovocie"}
+                maxLength={6} 
                 onChange={textAreaChange} 
                 value={word}
                 spellCheck="false"

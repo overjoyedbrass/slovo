@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
 
-
 const MAX_LENGTH = 10
 const MIN_LENGTH = 3
 
@@ -39,7 +38,7 @@ export const NicknamePicker = () => {
         }
         localStorage.nickname = nick
         setNick("")
-        setGoodMsg("Prezývka nastavená. Pri ďalšom uhádnutí Vás zapíšem pod týmto menom")
+        setGoodMsg("Prezývka nastavená. Pri ďalšom uhádnutí v prvom kole Vás zapíšem pod týmto menom")
     }
     
     return (

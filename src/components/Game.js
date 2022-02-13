@@ -2,9 +2,9 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
-import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite } from '../helpers.js'
+import { loadCorrect, loadAttempt, loadTable, isLetter, copy2D, loadGameOver, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite, letterToAccent } from '../helpers.js'
 import './Game.css'
-import { format, endOfDay } from 'date-fns'
+import { endOfDay } from 'date-fns'
 
 import { themes } from '../theme/themes.js'
 import { selectCurrentTheme } from '../theme/themeSlice.js'
@@ -12,13 +12,14 @@ import { Playtable } from './Playtable/Playtable.js'
 import { Keyboard } from './Keyboard/Keyboard.js'
 import { InfoBox } from './InfoBox.js'
 
-import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord, setGameOver } from '../slices/gameState.js'
+import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord } from '../slices/gameState.js'
 
 function getUsedLetters(array2D, attempt){
-    const letters = []
+    const letters = new Set()
     for(let i = 0; i < attempt; i++){
         for(let j = 0; j < array2D[i].length; j++){
-            letters.push(array2D[i][j])
+            letters.add(array2D[i][j])
+            letters.add(letterToAccent(array2D[i][j]))
         }
     }
     return letters
@@ -29,20 +30,22 @@ export const Game = ({setroute}) => {
     const attempts = 6
     const wordLength = useSelector(selectCurrentLength)
     const targetWord = useSelector(selectTargetWord)
-    const correctLetters = loadCorrect(wordLength)
-    const nickname = localStorage.nickname ?? "12345"
+    const nickname = localStorage.nickname ?? ""
+    const winner = localStorage.getItem(`winner${wordLength}`) ?? "0"
 
     var gameOver = loadGameOver(wordLength)
 
     const [fetching, setFecthing] = React.useState(false)
     const [warnMessage, setWarnMessage] = React.useState("")
-    
+
+
     const [table, setTable] = React.useState(loadTable(attempts, wordLength))
     const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
+    const [correctLetters, setCorrectLetters] = React.useState(loadCorrect(wordLength))
+
     const dispatch = useDispatch()
 
     const strtable = []
-
     React.useEffect(() => {
         if(targetWord !== "") return
         loadWord(wordLength).then(o => {
@@ -50,8 +53,8 @@ export const Game = ({setroute}) => {
 
             if(newWord){
                 resetGame()
+                saveToStorage("firstTry", wordLength, 1)
             }
-            
             dispatch(saveGameState({
                 word: slovo,
                 leaderboard: leaderboard,
@@ -66,12 +69,9 @@ export const Game = ({setroute}) => {
 
     React.useEffect(() => {
         saveToStorage("attempt", wordLength, attempt)
-        saveToStorage("table", wordLength, JSON.stringify(table))
-    }, [attempt])
-
-    React.useEffect(() => {
-        saveToStorage("table", wordLength, JSON.stringify(table))
-    }, [table])
+        saveToStorage("table", wordLength, table)
+        saveToStorage("correct", wordLength, correctLetters)
+    }, [attempt, correctLetters])
 
     const handlefunction = letter => {
         setWarnMessage("")
@@ -89,18 +89,16 @@ export const Game = ({setroute}) => {
         }
     }
 
-    const handleKeyDown = (event) => handlefunction(event.key)
     React.useEffect(() => {
+        const handleKeyDown = (event) => handlefunction(event.key)
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handleKeyDown])
+    })
 
     const checkAndSubmit = async () => {
-        if(gameOver === "1"){
-            return
-        }
+        if(gameOver === "1") return
         if(table[attempt].includes("")){
-            setWarnMessage("Slovo musí byť dĺžky 5")
+            setWarnMessage("Slovo musí byť dĺžky " + wordLength)
             return
         }
         const slovo = table[attempt].join("")
@@ -113,35 +111,44 @@ export const Game = ({setroute}) => {
             return
         }
         let winner = true;
+
         for(let i = 0; i < wordLength; i++){
             if(table[attempt][i] === targetWord[i]){
-                addCorrectLetter(table[attempt][i])
+                const copy = correctLetters.slice()
+                copy.push(table[attempt][i])
+                setCorrectLetters(copy)
             }
             else{
                 winner = false;
             }
         }
-        if(winner && nickname){
+        saveToStorage("winner", wordLength, winner ? 1 : 0)
+        const firstTry = localStorage.getItem(`firstTry${wordLength}`) ?? "0"
+
+        if(winner && nickname && firstTry === '1'){
             try{
                 const lastload = new Date(parseInt(localStorage.lastload))
                 const now = new Date()
                 const diff = Math.abs(Math.floor((lastload.getTime() - now.getTime()) / 1000))
                 
                 const attemptStr = `${attempt+1}/6`
+                dispatch(updateLeaderboard([nickname, diff, attemptStr]))
                 lbwrite({
                     nick: nickname,
                     time: diff,
-                    attempt: attemptStr
+                    attempt: attemptStr,
+                    length: wordLength
                 })
-                dispatch(updateLeaderboard([nickname, diff, attemptStr]))
             }
             catch(err){
                 console.log(err)
             }
         }
+        if(attempt+1 >= attempts){
+            saveToStorage("firstTry", wordLength, 0)
+        }
         if(attempt+1 >= attempts || winner){
-            gameOver = "1";
-            saveToStorage("gameOver", wordLength, gameOver)
+            saveToStorage("gameOver", wordLength, 1)
         }
         setAttempt(attempt + 1)
     }
@@ -170,19 +177,14 @@ export const Game = ({setroute}) => {
             }
         }
     }
-    const addCorrectLetter = l => {
-        correctLetters.push(l)
-        saveToStorage("correct", wordLength, JSON.stringify(correctLetters))
-    }
-
     const usedLetters = getUsedLetters(table, attempt)
-
     const getRowCellColors = index => {
         const colors = Array(wordLength).fill("")
-
+        
         if(index >= attempt){
             return colors
         }
+
         let copyRow = Array(wordLength).fill("")
         const word = table[index].join("")
         const freq = letterFrequency(targetWord)
@@ -212,6 +214,7 @@ export const Game = ({setroute}) => {
     }
 
     const resetGame = () => {
+        localStorage.winner = "0"
         localStorage.lastload = (new Date()).getTime()
         correctLetters.length = 0
         gameOver = "0"
@@ -220,12 +223,13 @@ export const Game = ({setroute}) => {
         setAttempt(0)
     }
 
+
     const getKeyCellColor = (l) => {
         l = l.toLowerCase()
-        if(!usedLetters.includes(l)){
+        if(!usedLetters.has(l)){
             return ""
         }
-        else if(correctLetters.includes(l)){
+        else if(correctLetters.includes(l)){ 
             return theme.rightCell
         }
         else if (targetWord.toLowerCase().includes(l)){
@@ -243,8 +247,21 @@ export const Game = ({setroute}) => {
     }
     return (
         <div className="game">
+            <div className="wrapper">
             <Mainbar targetWord={targetWord} strtable={strtable} setroute={setroute}/>
-            {
+            { targetWord ? (
+                <>
+                {winner === "1" ? <InfoBox theme={theme} targetWord={targetWord}/> : null}
+                {
+                    gameOver === "1" ? winner === "1" ? <Timer color={theme.textColor}/> : 
+                    <button style={{color: theme.textColor, backgroundColor: theme.bgColor }} onClick={() => resetGame()}>Skúsiť znovu</button> :
+                    (fetching ? <div className="warning">Zisťujem . . .</div> : 
+                    <div className="warning">{warnMessage}</div>)
+                }
+                </>
+            ) : null }
+            </div>
+            {  
                 !targetWord ? 
                 (
                     <>
@@ -255,18 +272,12 @@ export const Game = ({setroute}) => {
                  :
                 (
                     <>
-                    <InfoBox theme={theme} targetWord={targetWord}/>
-                    {
-                        gameOver === "1" ? <Timer color={theme.textColor}/> :
-                        (fetching ? <div className="warning">Zisťujem . . .</div> : 
-                        <div className="warning">{warnMessage}</div>)
-                    }
-
                     <Playtable gameState={table} theme={theme} colors={rowColors}/>
                     <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
                     </>
                 )
             }
+            {/* <button onClick={() => resetGame()}>RESET</button> */}
         </div>
     )
 }

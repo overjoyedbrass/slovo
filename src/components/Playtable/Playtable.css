@@ -1,23 +1,36 @@
 .playtable {
-    text-align: center;
     padding-top: 1em;
     padding-bottom: 1em;
-    display: grid;
+    display: flex;
+    width: 100%;
+    max-width: 500px;
+    justify-content: center;
+    flex-direction: column;
 }
-
+.playtableRow {
+    display: flex;
+    justify-content: center;
+}
 .tablecell {
     user-select: none;
-    display: inline-flex;    
+    display: flex;
     justify-content: center;
     align-items: center;
-    vertical-align: middle;
-    box-sizing: border-box;
     border: 2px solid;
-    margin: 5px;
-    width: 2em;
-    height: 2em;
-    font-size: clamp(1em, 5vmin, 2em);
+    border-radius: 3px;
+    margin: 0.12em;
+
+    width: min(8vh, 8vw);
+    aspect-ratio: 1;
+
+    font-size: 2em;
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
+}
+
+@media only screen and (max-width: 400px), (max-height: 600px) {
+    .tablecell {
+        font-size: 5vmin;
+    }
 }

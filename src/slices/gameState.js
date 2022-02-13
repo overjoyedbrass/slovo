@@ -12,24 +12,26 @@ export const gameStateSlice = createSlice({
         leaderboards: {
 
         },
-        history: {
-
-        }
+        history: []
     },
     reducers: {
         saveGameState(state, action){
             state.words[state.currentLength] = action.payload.word
             state.leaderboards[state.currentLength] = action.payload.leaderboard
-            state.history[state.currentLength] = action.payload.history
+            state.history = action.payload.history
         },
         updateLeaderboard(state, action){
             state.leaderboards[state.currentLength].push(action.payload)
+        },
+        setNewLength(state, action){
+            localStorage.wordLength = action.payload
+            state.currentLength = action.payload
         }
     }
 })
 
 export default gameStateSlice.reducer
-export const { saveGameState, updateLeaderboard, setGameOver } = gameStateSlice.actions
+export const { saveGameState, updateLeaderboard, setNewLength } = gameStateSlice.actions
 
 export const selectCurrentLength = state => state.gameState.currentLength
 
@@ -37,4 +39,4 @@ export const selectTargetWord = state => state.gameState.words[state.gameState.c
 
 export const selectLeaderboard = state => state.gameState.leaderboards[state.gameState.currentLength] ?? []
 
-export const selectHistory = state => state.gameState.history[state.gameState.currentLength] ?? []
+export const selectHistory = state => state.gameState.history ?? []

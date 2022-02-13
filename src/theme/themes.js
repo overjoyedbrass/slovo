@@ -4,9 +4,12 @@ export const themes = {
         
         bgColor: "white",
         textColor: "black",
+        
+        keyboardText: "white",
+        keycell: "black",
 
         rightCell: '#66ff66',
-        containedCell: '#ffcc00',
+        containedCell: '#ddbb00',
         wrongCell: 'lightgrey',
 
         cellBgFill: "black",
@@ -25,9 +28,12 @@ export const themes = {
         bgColor: "#333333",
         textColor: "white",
         
+        keyboardText: "black",
+        keycell: "#bbbbbb",
+
         rightCell: '#33cc33',
         containedCell: 'orange',
-        wrongCell: 'grey',
+        wrongCell: '#666666',
 
         cellBgFill: "white",
         cellBg: "darkGrey",

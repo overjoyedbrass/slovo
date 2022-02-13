@@ -1,7 +1,20 @@
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
-const DIKARITIKA = 'áéíóúťšďľčňý'
+const diakritika = 'ľščťžýáíéóďúň'
+
+
+export function letterToAccent(l){
+    const letterMap = {
+        'l': 'ľ', 's': 'š', 'c': 'č', 't': 'ť', 'z': "ž",
+        'y': 'ý', 'a': 'á', 'i': 'í', 'e': 'é', 'o': 'ó', 
+        'd': 'ď', 'n': 'ň'
+    }
+    const output = letterMap[l]
+    return output ? output : l.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+}
+
+
 
 async function customFetch(url, method="GET", data=null){
     const object = {
@@ -29,16 +42,16 @@ export function copy2D(array2d){
     return newArray
 }
 export function isLetter(str) {
-    return str.length === 1 && str.match(/[a-z]/i) || DIKARITIKA.includes(str);
+    return str.length === 1 && (str.match(/[a-z]/i) || diakritika.includes(str));
 }
 
 export const loadTable = (rows, cols) => {
     const table = localStorage.getItem(`table${cols}`)
     try{
-        return table ? JSON.parse(table) : Array(rows).fill(0).map(x => Array(cols).fill(""))
+        return table ? JSON.parse(table) : Array(rows).fill(Array(cols).fill(""))
     }
     catch(err){
-        return Array(rows).fill(0).map(x => Array(cols).fill(""))
+        return Array(rows).fill(Array(cols).fill(""))
     }
 }
 
@@ -46,6 +59,7 @@ export const loadAttempt = (length) => {
     const number = localStorage.getItem(`attempt${length}`)
     return number ? parseInt(number) : 0
 }
+
 export const loadCorrect = length => {
     const correct = localStorage.getItem(`correct${length}`)
     try {
@@ -74,7 +88,6 @@ export const loadGameOver = (length) => {
 }
 
 export const loadWord = async (length) => {
-
     const url = `${BASE_URL}/word?length=${length}`
     const response = await customFetch(url)
     var data = await response.text()
@@ -145,5 +158,5 @@ export function letterFrequency(word){
 }
 
 export function saveToStorage(keyWord, wordLength, data){
-    localStorage.setItem(`${keyWord}${wordLength}`, data)
+    localStorage.setItem(`${keyWord}${wordLength}`, JSON.stringify(data))
 }

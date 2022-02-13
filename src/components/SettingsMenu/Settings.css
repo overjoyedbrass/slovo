@@ -15,19 +15,33 @@
     
 }
 
+.hsCol1 {
+    overflow: hidden;
+    width: 50%;
+    text-align: end;
+    padding-right: 5px;
+}
+
+
+.hsCol2 {
+    text-align: left;
+    width: 50%;
+    padding-left: 5px;
+}
+
 .hsRow {
     display: flex;
 }
 
 .container {
-    border: 1px solid;
+    border-bottom: 1px solid;
     max-width: 500px;
-    width: 80%;
-    padding: 1em;
-    margin-top: 1.5em;
-    border-radius: 1.5em;
-    min-height: 8em;
+    width: 100%;
+    max-height: 180px;
+    padding: 1em 0 1em 0;
     overflow: auto;
+    
+    text-align: center;
 }
 
 input {
@@ -66,4 +80,18 @@ button {
     margin: 2em;
     content: "";
     height: 0px;
+}
+
+select {
+    font-family: inherit;
+    font-size: 1.1em;
+    padding: 0.1em;
+    width: 3em;
+    border: 1px solid;
+    border-radius: 0.8em;
+}
+
+option {
+    font-family: inherit;
+    font-size: inherit;
 }

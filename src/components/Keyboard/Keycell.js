@@ -1,12 +1,12 @@
 import React from 'react'
 
-export const Keycell = ({ letter, handlefunction, color }) => {
-    let sx = { backgroundColor: color }
+export const Keycell = ({ letter, handlefunction, color, theme }) => {
+    if(!color){
+        color = theme.keycell
+    }
+    let sx = { backgroundColor: color, color: theme.keyboardText }
     if(letter === '↵' || letter === '⌫'){
-        sx = {
-            paddingLeft: "0.8em",
-            paddingRight: "0.8em"
-        }
+        sx.padding = "0 1em 0 1em"
     }
     return (
         <div 

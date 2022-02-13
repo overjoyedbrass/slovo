@@ -13,21 +13,22 @@ import homeLight from '../../img/homeLight.png'
 import { selectHistory } from '../../slices/gameState.js'
 
 import './Settings.css'
-// import { loadWordLength } from '../../helpers'
 import { Suggester } from './Suggester'
 import { NicknamePicker } from './NicknamePicker'
 
 import { format, parseISO } from 'date-fns'
+import { LengthPicker } from './LengthPicker'
 
 export const Settings = ({setroute}) => {
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
-    // const wordLength = loadWordLength()
-
     
     const history = useSelector(selectHistory).map(x => [parseISO(x[0]), x[1]])
+
     history.sort((a, b) => b[0]-a[0])
     history.shift()
+    history.shift()
+
 
     React.useEffect(() => {
         document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;
@@ -49,13 +50,14 @@ export const Settings = ({setroute}) => {
                 <h3>Predchádzajúce slová</h3>
                 {
                     history.map((z, i) => <div key={i} className="hsRow">
-                        <div style={{width: "40%"}} className="lbCol">{z[1]}</div>
-                        <div style={{width: "40%"}} className="lbCol">{format(z[0], "d. M.")}</div>
+                        <div className="hsCol1">{z[1]}</div>
+                        <div className="hsCol2">{format(z[0], "d. M.")}</div>
                     </div>)
                 }
             </div>
             <Suggester />
             <NicknamePicker />
+            <LengthPicker />
         </div>
         )
 }

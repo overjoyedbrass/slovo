@@ -5,14 +5,11 @@ import { IntroCompo } from './components/SettingsMenu/IntroCompo.js'
 
 function App() {
     const [route, changeRoute] = React.useState("")
-    const [routes, setRoutes] = React.useState({})
 
-    React.useEffect(() => {
-        setRoutes({
-            game: (<Game setroute={changeRoute}/>),
-            settings: (<Settings setroute={changeRoute}/>)
-        })    
-    }, [])
+    const routes = {
+        game: (<Game setroute={changeRoute}/>),
+        settings: (<Settings setroute={changeRoute}/>)
+    }
 
     const nickname = localStorage.getItem("nickname")
     if(nickname === null){
