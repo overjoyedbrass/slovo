@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/slovo/static/css/main.8426115c.css",
-    "main.js": "/slovo/static/js/main.16e096fe.js",
+    "main.css": "/slovo/static/css/main.8c58466d.css",
+    "main.js": "/slovo/static/js/main.34afffde.js",
     "static/media/bronze.png": "/slovo/static/media/bronze.a6118719e0113ec6d7da.png",
     "static/media/silver.png": "/slovo/static/media/silver.9053554246601536d55a.png",
     "static/media/gold.png": "/slovo/static/media/gold.b4da14b585c28396ba35.png",
@@ -13,11 +13,11 @@
     "static/media/lbDark.png": "/slovo/static/media/lbDark.84b35797b251fee26cbb.png",
     "static/media/settingsDark.png": "/slovo/static/media/settingsDark.f3e7b4961fbef2100705.png",
     "index.html": "/slovo/index.html",
-    "main.8426115c.css.map": "/slovo/static/css/main.8426115c.css.map",
-    "main.16e096fe.js.map": "/slovo/static/js/main.16e096fe.js.map"
+    "main.8c58466d.css.map": "/slovo/static/css/main.8c58466d.css.map",
+    "main.34afffde.js.map": "/slovo/static/js/main.34afffde.js.map"
   },
   "entrypoints": [
-    "static/css/main.8426115c.css",
-    "static/js/main.16e096fe.js"
+    "static/css/main.8c58466d.css",
+    "static/js/main.34afffde.js"
   ]
 }
