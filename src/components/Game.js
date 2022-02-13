@@ -112,16 +112,16 @@ export const Game = ({setroute}) => {
         }
         let winner = true;
 
+        const copyCorrect = correctLetters.slice()
         for(let i = 0; i < wordLength; i++){
             if(table[attempt][i] === targetWord[i]){
-                const copy = correctLetters.slice()
-                copy.push(table[attempt][i])
-                setCorrectLetters(copy)
+                copyCorrect.push(table[attempt][i])
             }
             else{
                 winner = false;
             }
         }
+        setCorrectLetters(copyCorrect)
         saveToStorage("winner", wordLength, winner ? 1 : 0)
         const firstTry = localStorage.getItem(`firstTry${wordLength}`) ?? "0"
 
@@ -222,8 +222,7 @@ export const Game = ({setroute}) => {
         setTable(Array(attempts).fill(Array(wordLength).fill("")))
         setAttempt(0)
     }
-
-
+    
     const getKeyCellColor = (l) => {
         l = l.toLowerCase()
         if(!usedLetters.has(l)){
@@ -246,7 +245,7 @@ export const Game = ({setroute}) => {
         }
     }
     return (
-        <div className="game">
+        <div className="game" style={{justifyContent: !targetWord ? "start" : "space-between"}}>
             <div className="wrapper">
             <Mainbar targetWord={targetWord} strtable={strtable} setroute={setroute}/>
             { targetWord ? (
