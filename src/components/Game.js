@@ -107,9 +107,9 @@ export const Game = ({setroute}) => {
         const goodWord = await wordCheck(slovo, nickname)
         setFecthing(false)
         if(!goodWord){
-            for(let i = 0; i < wordLength; i++){
-                removeLetter()
-            }
+            const copy = copy2D(table)
+            copy[attempt] = Array(wordLength).fill("")
+            setTable(copy)
             setWarnMessage("Slovo nie je v zozname")
             return
         }
