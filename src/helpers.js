@@ -102,6 +102,7 @@ export const loadWord = async (length) => {
     const leaderboardData = data.leaderboard
     const history = data.history
 
+    console.log("hist", history)
     const leaderboard = []
     // "nick" : [time, attempt]
     for (const [key, value] of Object.entries(leaderboardData)) {

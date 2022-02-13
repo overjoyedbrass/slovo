@@ -23,12 +23,12 @@ export const Settings = ({setroute}) => {
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
     
-    const history = useSelector(selectHistory).map(x => [parseISO(x[0]), x[1]])
+    var history = useSelector(selectHistory).map(x => [parseISO(x[0]), x[1]])
 
     history.sort((a, b) => b[0]-a[0])
-    history.shift()
-    history.shift()
-
+    const dnes = new Date()
+    history = history.filter(x => !format(x[0], "yyyy-MM-dd").includes(format(dnes, "yyyy-MM-dd")))
+    
 
     React.useEffect(() => {
         document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;

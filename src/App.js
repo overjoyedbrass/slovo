@@ -16,6 +16,7 @@ function App() {
         return <IntroCompo setroute={changeRoute}/>
     }
 
+
     return (
         route in routes ? 
         routes[route] :

@@ -48,7 +48,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
     const l = useSelector(selectCurrentLength)
     const medals = [gold, silver, bronze]
     const lb = useSelector(selectLeaderboard)
-
+    
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
     

@@ -2,8 +2,8 @@
     padding-top: 1em;
     padding-bottom: 1em;
     display: flex;
-    width: 100%;
-    max-width: 500px;
+    width: 80%;
+    max-width: 450px;
     justify-content: center;
     flex-direction: column;
 }
@@ -20,7 +20,8 @@
     border-radius: 3px;
     margin: 0.12em;
 
-    width: min(8vh, 8vw);
+    width: 100%;
+    
     aspect-ratio: 1;
 
     font-size: 2em;
@@ -29,8 +30,14 @@
     text-transform: uppercase;
 }
 
-@media only screen and (max-width: 400px), (max-height: 600px) {
+@media only screen and (max-width: 400px), (max-height: 740px) {
     .tablecell {
         font-size: 5vmin;
+        width: 5vh;
+    }
+}
+@media only screen and (max-height: 500) {
+    .tablecell {
+        width: 5vh;
     }
 }

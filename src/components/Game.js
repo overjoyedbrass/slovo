@@ -107,6 +107,9 @@ export const Game = ({setroute}) => {
         const goodWord = await wordCheck(slovo, nickname)
         setFecthing(false)
         if(!goodWord){
+            for(let i = 0; i < wordLength; i++){
+                removeLetter()
+            }
             setWarnMessage("Slovo nie je v zozname")
             return
         }
@@ -222,7 +225,7 @@ export const Game = ({setroute}) => {
         setTable(Array(attempts).fill(Array(wordLength).fill("")))
         setAttempt(0)
     }
-    
+
     const getKeyCellColor = (l) => {
         l = l.toLowerCase()
         if(!usedLetters.has(l)){
