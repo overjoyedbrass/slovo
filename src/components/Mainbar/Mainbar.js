@@ -62,7 +62,7 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
         <header>
             <div className="menu">
                 <img alt="infoicon" onClick={() => setOpen({help: !open.help, stats: false})}  className="icon" src={keyTheme === "dark" ? infoDark : infoLight} />
-                {targetWord && win && firstTry ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
+                {targetWord && win ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
                 
             </div>
 

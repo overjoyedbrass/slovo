@@ -46,6 +46,7 @@ export const Settings = ({setroute}) => {
                     <ThemeSwitch />
                 </div>
             </header>
+            <LengthPicker />
             <div className="container">
                 <h3>Predchádzajúce slová</h3>
                 {
@@ -57,7 +58,6 @@ export const Settings = ({setroute}) => {
             </div>
             <Suggester />
             <NicknamePicker />
-            <LengthPicker />
         </div>
         )
 }

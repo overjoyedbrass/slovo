@@ -52,8 +52,9 @@ export const Game = ({setroute}) => {
             const [slovo, newWord, leaderboard, history] = o
 
             if(newWord){
-                resetGame()
+                saveToStorage("lastload", wordLength, (new Date()).getTime())
                 saveToStorage("firstTry", wordLength, 1)
+                resetGame()
             }
             dispatch(saveGameState({
                 word: slovo,
@@ -130,7 +131,7 @@ export const Game = ({setroute}) => {
 
         if(winner && nickname && firstTry === '1'){
             try{
-                const lastload = new Date(parseInt(localStorage.lastload))
+                const lastload = new Date(parseInt(localStorage.getItem(`lastload${wordLength}`)))
                 const now = new Date()
                 const diff = Math.abs(Math.floor((lastload.getTime() - now.getTime()) / 1000))
                 
@@ -217,8 +218,7 @@ export const Game = ({setroute}) => {
     }
 
     const resetGame = () => {
-        localStorage.winner = "0"
-        localStorage.lastload = (new Date()).getTime()
+        saveToStorage("winner", wordLength, 0)
         correctLetters.length = 0
         gameOver = "0"
         removeGameStorage(wordLength)
