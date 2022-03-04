@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loadWordLength } from "../helpers";
+import { loadWordLength } from "../helpers/helpers";
 
 
 

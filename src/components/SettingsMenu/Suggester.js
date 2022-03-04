@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { suggestWord } from "../../helpers";
+import { suggestWord } from "../../helpers/helpers";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
 import { toast } from "react-toastify";

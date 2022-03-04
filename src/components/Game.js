@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
-import { loadAttempt, loadTable, isLetter, copy2D, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite, letterToAccent, increaseRound } from '../helpers.js'
+import { loadAttempt, loadTable, isLetter, copy2D, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite, letterToAccent, increaseRound } from '../helpers/helpers.js'
 import './Game.css'
 import { endOfDay } from 'date-fns'
 
@@ -104,11 +104,7 @@ export const Game = () => {
             return
         }
         const slovo = table[attempt].join("")
-        allowInput(false)
-        const promise = wordCheck(slovo, nickname)
-        toast.promise(promise, {pending: "Zisťujem . . .", duration: 0})
-        const goodWord = await promise
-        allowInput(true)
+        const goodWord = wordCheck(slovo)
         
         if(!goodWord){
             const copy = copy2D(table)

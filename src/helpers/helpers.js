@@ -1,8 +1,14 @@
+import { words } from './words.js'
+
 const BASE_URL = ""
 const AUTHORIZATION_KEY = ""
 
 const diakritika = 'ľščťžýáíéóďúň'
 
+
+export function wordCheck(slovo) {
+    return words.includes(slovo)
+}
 
 export function letterToAccent(l){
     const letterMap = {
@@ -127,13 +133,6 @@ export const loadWord = async (length) => {
     }
     localStorage.setItem(`lastWord${length}`, hashCode(slovo))
     return [slovo, reset, leaderboard, history]
-}
-
-export async function wordCheck(slovo) {
-    const url = `${BASE_URL}/check?word=${slovo.toLowerCase()}`
-    const response = await customFetch(url)
-    const text = await response.text()
-    return text === "True"
 }
 
 export async function lbwrite(data) {
