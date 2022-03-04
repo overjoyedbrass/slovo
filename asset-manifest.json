@@ -1,10 +1,12 @@
 {
   "files": {
-    "main.css": "/slovo/static/css/main.8c58466d.css",
-    "main.js": "/slovo/static/js/main.ac897403.js",
+    "main.css": "/slovo/static/css/main.fd0021cb.css",
+    "main.js": "/slovo/static/js/main.4d1151ef.js",
     "static/media/bronze.png": "/slovo/static/media/bronze.a6118719e0113ec6d7da.png",
+    "static/media/five.png": "/slovo/static/media/five.223e6a981aadba01347c.png",
     "static/media/silver.png": "/slovo/static/media/silver.9053554246601536d55a.png",
     "static/media/gold.png": "/slovo/static/media/gold.b4da14b585c28396ba35.png",
+    "static/media/six.png": "/slovo/static/media/six.3ef65f2c9d8698aa1480.png",
     "static/media/bulbLight.png": "/slovo/static/media/bulbLight.4f4f6af163dd944acdd3.png",
     "static/media/lbLight.png": "/slovo/static/media/lbLight.cf15ba72bcdcd7f5edc4.png",
     "static/media/candy.png": "/slovo/static/media/candy.d6542d0285d3f096c25f.png",
@@ -13,11 +15,11 @@
     "static/media/lbDark.png": "/slovo/static/media/lbDark.84b35797b251fee26cbb.png",
     "static/media/settingsDark.png": "/slovo/static/media/settingsDark.f3e7b4961fbef2100705.png",
     "index.html": "/slovo/index.html",
-    "main.8c58466d.css.map": "/slovo/static/css/main.8c58466d.css.map",
-    "main.ac897403.js.map": "/slovo/static/js/main.ac897403.js.map"
+    "main.fd0021cb.css.map": "/slovo/static/css/main.fd0021cb.css.map",
+    "main.4d1151ef.js.map": "/slovo/static/js/main.4d1151ef.js.map"
   },
   "entrypoints": [
-    "static/css/main.8c58466d.css",
-    "static/js/main.ac897403.js"
+    "static/css/main.fd0021cb.css",
+    "static/js/main.4d1151ef.js"
   ]
 }
