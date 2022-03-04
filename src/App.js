@@ -1,26 +1,34 @@
 import React from 'react';
+import {
+    HashRouter,
+    Routes,
+    Route
+} from 'react-router-dom'
 import { Game } from './components/Game.js'
 import { Settings } from './components/SettingsMenu/Settings.js'
 import { IntroCompo } from './components/SettingsMenu/IntroCompo.js'
+import { useSelector } from 'react-redux';
+
+import { ToastContainer, Flip } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
-    const [route, changeRoute] = React.useState("")
-
-    const routes = {
-        game: (<Game setroute={changeRoute}/>),
-        settings: (<Settings setroute={changeRoute}/>)
-    }
-
-    const nickname = localStorage.getItem("nickname")
-    if(nickname === null){
-        return <IntroCompo setroute={changeRoute}/>
-    }
-
-
+    const nick = useSelector(state => state.nickname.nick)
     return (
-        route in routes ? 
-        routes[route] :
-        <Game setroute={changeRoute}/>
+        <>
+        <HashRouter>
+            <Routes>
+                <Route exact path="/" element={nick === undefined ? <IntroCompo /> : <Game />}/>
+                <Route path="/settings" element={<Settings />}/>
+            </Routes>
+        </HashRouter>
+        <ToastContainer
+            autoClose={1000}
+            transition={Flip}
+            position="bottom-center"
+            pauseOnHover={false}
+        />
+        </>
     )
 }
 export default App;

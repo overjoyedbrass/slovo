@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { suggestWord } from "../../helpers";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
-
+import { toast } from "react-toastify";
 
 const SUGGEST_LIMIT = 2
 
@@ -14,8 +14,6 @@ function datesAre10MApart(d1, d2){
 }
 
 export const Suggester = () => {
-    const [infMsg, setInfMsg] = React.useState("")
-    const [goodMsg, setGoodMsg] = React.useState("")
     const [word, setWord] = React.useState("")
     const theme = themes[useSelector(selectCurrentTheme)]
 
@@ -23,8 +21,6 @@ export const Suggester = () => {
         setWord(
             event.target.value
         )
-        setGoodMsg("")
-        setInfMsg("")
     }
     const enterPress = (e) => {
         if(e.keyCode === 13){
@@ -32,10 +28,8 @@ export const Suggester = () => {
         }
     }
     const buttonClick = (e) => {
-        setInfMsg("")
         if(word.length < 5){
-            setInfMsg("slovo musí byť aspoň dĺžky 5")
-            setGoodMsg("")
+            toast.warn("Slovo musí byť dĺžky aspoň 5!", {toastId: 141})
             return
         }
         const teraz = new Date()
@@ -44,11 +38,11 @@ export const Suggester = () => {
         if(!localStorage.lastSuggest ||datesAre10MApart(teraz, last)){
             suggestWord(word)
             setWord("")
-            setGoodMsg("Úspešné odoslané")
+            toast.success("Úspešne odoslané", {toastId: 142})
             localStorage.lastSuggest = ''+teraz.getTime()
             return
         }
-        setInfMsg(`Môžete navrhnúť slovo iba raz za ${SUGGEST_LIMIT} minúty`)
+        toast.error(`Môžete navrhnúť slovo iba raz za ${SUGGEST_LIMIT} minúty`, {toastId: 143})
     }
     
     return (
@@ -73,9 +67,6 @@ export const Suggester = () => {
                 Odoslať
             </button>
             <br />
-            { !goodMsg ? infMsg :
-            <font style={{color: theme.href}}>{goodMsg}</font>
-            }
         </div>
         </>
     )

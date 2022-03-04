@@ -7,7 +7,7 @@ import { selectCurrentTheme } from '../../theme/themeSlice'
 import { themes } from '../../theme/themes'
 
 
-export const Playtable = ({gameState, colors}) => {
+export const Playtable = ({gameState, colors, multiples}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
     return (
         <div className="playtable">{
@@ -16,11 +16,12 @@ export const Playtable = ({gameState, colors}) => {
                 return (
                     <div key={rowIndex} className={"playtableRow"}>{
                         row.map( (l, colIndex) => 
-                            <Tablecell 
+                            <Tablecell
                                 key={colIndex}
                                 letter={l}
                                 color={rowColors[colIndex]}
                                 theme={theme}
+                                multiple={multiples.includes(`${rowIndex}.${colIndex}`)}
                             />
                         )}
                     </div>

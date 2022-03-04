@@ -8,7 +8,7 @@ export function letterToAccent(l){
     const letterMap = {
         'l': 'ľ', 's': 'š', 'c': 'č', 't': 'ť', 'z': "ž",
         'y': 'ý', 'a': 'á', 'i': 'í', 'e': 'é', 'o': 'ó', 
-        'd': 'ď', 'n': 'ň'
+        'd': 'ď', 'n': 'ň', 'u': 'ú'
     }
     const output = letterMap[l]
     return output ? output : l.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -87,6 +87,17 @@ export const loadGameOver = (length) => {
     return gameOver ? gameOver : "0"
 }
 
+function compareLbEntries(a, b){
+    const timea = a[1],
+          timeb = b[1],
+          rounda = parseInt(a[2].split("/")[1]),
+          roundb = parseInt(b[2].split("/")[1])
+    if(rounda === roundb){
+        return timea-timeb
+    }
+    return rounda-roundb
+}
+
 export const loadWord = async (length) => {
     const url = `${BASE_URL}/word?length=${length}`
     const response = await customFetch(url)
@@ -107,7 +118,7 @@ export const loadWord = async (length) => {
     for (const [key, value] of Object.entries(leaderboardData)) {
         leaderboard.push([key, value[0], value[1]])
     }
-    leaderboard.sort((a, b) => a[1]-b[1])
+    leaderboard.sort(compareLbEntries)
 
     const lastWord = localStorage.getItem(`lastWord${length}`)
     let reset = false
@@ -131,11 +142,8 @@ export async function lbwrite(data) {
     return response
 }
 
-//dont want to do localStorage.clear(), maybe i will wantt to keep some data in future
 export const removeGameStorage = length => {
-    localStorage.setItem(`correct${length}`, "")
-    localStorage.setItem(`gameOver${length}`, "")
-    localStorage.setItem(`attempt${length}`, "")
+    localStorage.setItem(`attempt${length}`, 0)
     localStorage.setItem(`table${length}`, "")
 }
 
@@ -159,4 +167,9 @@ export function letterFrequency(word){
 
 export function saveToStorage(keyWord, wordLength, data){
     localStorage.setItem(`${keyWord}${wordLength}`, JSON.stringify(data))
+}
+
+export function increaseRound(wordLength){
+    const round = parseInt(localStorage.getItem(`round${wordLength}`))
+    localStorage.setItem(`round${wordLength}`, round+1)
 }

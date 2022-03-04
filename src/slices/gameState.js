@@ -34,9 +34,6 @@ export default gameStateSlice.reducer
 export const { saveGameState, updateLeaderboard, setNewLength } = gameStateSlice.actions
 
 export const selectCurrentLength = state => state.gameState.currentLength
-
 export const selectTargetWord = state => state.gameState.words[state.gameState.currentLength] ?? ""
-
 export const selectLeaderboard = state => state.gameState.leaderboards[state.gameState.currentLength] ?? []
-
 export const selectHistory = state => state.gameState.history ?? []

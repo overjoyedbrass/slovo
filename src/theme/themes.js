@@ -2,20 +2,20 @@ export const themes = {
     "light": {
         NAME: "light",
         
-        bgColor: "white",
+        bgColor: "#c4c4c4",
         textColor: "black",
         
         keyboardText: "white",
-        keycell: "black",
+        keycell: "#363747",
 
-        rightCell: '#66ff66',
-        containedCell: '#ddbb00',
-        wrongCell: 'lightgrey',
+        rightCell: '#05fc91',
+        containedCell: '#ffcc00',
+        wrongCell: '#a8a8a8',
 
         cellBgFill: "black",
-        cellBg: "lightgrey",
+        cellBg: "darkgrey",
 
-        dialogColor: "#FEFEFE",
+        dialogColor: "#e4e4e4",
         href: "#0261fa",
 
         spinner: "white",
@@ -25,18 +25,18 @@ export const themes = {
     "dark": {
         NAME: "dark",
 
-        bgColor: "#333333",
+        bgColor: "#232830",
         textColor: "white",
         
         keyboardText: "black",
-        keycell: "#bbbbbb",
+        keycell: "#cccccc",
 
-        rightCell: '#33cc33',
-        containedCell: 'orange',
-        wrongCell: '#666666',
+        rightCell: '#59c449',
+        containedCell: '#f2ba00',
+        wrongCell: '#3b3b3b',
 
         cellBgFill: "white",
-        cellBg: "darkGrey",
+        cellBg: "Grey",
 
         dialogColor: "#222222",
         href: "#66ff66",

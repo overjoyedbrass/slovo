@@ -1,5 +1,4 @@
 import React from 'react'
-import { loadGameOver } from '../helpers'
 
 import { useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../theme/themeSlice'

@@ -4,7 +4,7 @@ import { themes } from '../../theme/themes'
 import { useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../../theme/themeSlice'
 
-export const Tablecell = ({letter, color}) => {
+export const Tablecell = ({letter, color, multiple}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
 
     const farby = { 
@@ -13,6 +13,9 @@ export const Tablecell = ({letter, color}) => {
     }
 
     return (
-        <div style={{ ...farby}} className="tablecell">{letter}</div>
+        <div style={{ ...farby}} className="tablecell">
+            {letter}
+            {multiple ? <div className="plus">+</div> : null}
+        </div>
     )
 }

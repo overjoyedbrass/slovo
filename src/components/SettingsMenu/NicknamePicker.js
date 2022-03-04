@@ -1,23 +1,24 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
+import { setNickname } from "../../slices/nicknameSlice";
+
+import { toast } from 'react-toastify';
+
 
 const MAX_LENGTH = 10
 const MIN_LENGTH = 3
 
 export const NicknamePicker = () => {
-    const [infMsg, setInfMsg] = React.useState("")
-    const [goodMsg, setGoodMsg] = React.useState("")
+
     const [nick, setNick] = React.useState("")
     const theme = themes[useSelector(selectCurrentTheme)]
-
-    const currentNick = localStorage.nickname
+    const dispatch = useDispatch()
+    const currentNick = useSelector(state => state.nickname.nick)
 
     const textAreaChange = event => {
         setNick(event.target.value.replace(/[^a-zA-Z]/, ''))
-        setGoodMsg("")
-        setInfMsg("")
     }
     const enterPress = (e) => {
         if(e.keyCode === 13){
@@ -25,20 +26,17 @@ export const NicknamePicker = () => {
         }
     }
     const buttonClick = (e) => {
-        setInfMsg("")
         if(nick.length < MIN_LENGTH){
-            setInfMsg("Nickname musí byť dĺžky aspoň 3")
-            setGoodMsg("")
+            toast.warn("Prezývka musí byť dĺžky aspoň 3", {toastId: 150})
             return
         }
         if(nick === currentNick){
-            setInfMsg("Nickname je rovnaký ako predchádzajúci")
-            setGoodMsg("")
+            toast.warn("Prezývka je rovnaká ako predchadzajúca", {toastId: 151})
             return
         }
-        localStorage.nickname = nick
         setNick("")
-        setGoodMsg("Prezývka nastavená. Pri ďalšom uhádnutí v prvom kole Vás zapíšem pod týmto menom")
+        dispatch(setNickname(nick))
+        toast.success("Prezývka nastavená!", {toastId: 151})
     }
     
     return (
@@ -62,9 +60,6 @@ export const NicknamePicker = () => {
                 {currentNick ? "Zmeniť" : "Nastaviť"}
             </button>
             <br />
-            { !goodMsg ? infMsg :
-            <font style={{color: theme.href}}>{goodMsg}</font>
-            }
         </div>
         </>
     )

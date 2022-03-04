@@ -1,27 +1,29 @@
 import React from 'react'
 
 import { ThemeSwitch } from './ThemeSwitch'
-
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../../theme/themeSlice'
-
 import { themes } from '../../theme/themes.js'
-
 import homeDark from '../../img/homeDark.png'
 import homeLight from '../../img/homeLight.png'
-
-import { selectHistory } from '../../slices/gameState.js'
-
+import { selectCurrentLength, selectHistory } from '../../slices/gameState.js'
 import './Settings.css'
 import { Suggester } from './Suggester'
 import { NicknamePicker } from './NicknamePicker'
-
 import { format, parseISO } from 'date-fns'
-import { LengthPicker } from './LengthPicker'
+import { useNavigate } from 'react-router-dom'
+import { setNewLength } from '../../slices/gameState.js'
 
-export const Settings = ({setroute}) => {
+import five from '../../img/five.png'
+import six from '../../img/six.png'
+
+
+export const Settings = () => {
+    const length = useSelector(selectCurrentLength)
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     
     var history = useSelector(selectHistory).map(x => [parseISO(x[0]), x[1]])
 
@@ -38,15 +40,15 @@ export const Settings = ({setroute}) => {
         <div className="settingsPage">
             <header>
                 <div className="menu">
-                    <img onClick={() => setroute("game")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
+                    <img alt="lightbulb" onClick={() => navigate("/")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
                 </div>
                 <div className="title">Nástroje</div>
 
                 <div className="menu">
+                    <img alt="length" onClick={() => { dispatch(setNewLength(length === 5 ? 6 : 5)) }} className="icon" src={length === 5 ? five : six} />
                     <ThemeSwitch />
                 </div>
             </header>
-            <LengthPicker />
             <div className="container">
                 <h3>Predchádzajúce slová</h3>
                 {

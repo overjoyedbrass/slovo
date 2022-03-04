@@ -13,7 +13,6 @@ window.addEventListener('resize', () => {
     document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
 
-
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>

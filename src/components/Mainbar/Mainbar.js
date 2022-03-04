@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../../theme/themeSlice'
 import { themes } from '../../theme/themes.js'
-import { selectCurrentLength } from '../../slices/gameState.js'
+import { useNavigate } from 'react-router-dom'
 import './Mainbar.css'
 
 import infoLight from '../../img/infoLight.png'
@@ -20,6 +20,7 @@ import candy from '../../img/candy.png'
 import { format } from 'date-fns'
 import { Tablecell } from '../Playtable/Tablecell.js'
 import { selectLeaderboard } from '../../slices/gameState.js'
+import { toast } from 'react-toastify'
 
 function getMinSecs(seconds){
     const min = Math.floor(seconds/60)
@@ -37,23 +38,18 @@ async function copyTextToClipboard(text) {
     }
 }
 
-
-export const Mainbar = ({targetWord, strtable, setroute}) => {
+export const Mainbar = ({share, strtable}) => {
     const [open, setOpen] = React.useState({
         help: false,
         stats: false,
     })
-
-
-    const l = useSelector(selectCurrentLength)
+    const navigate = useNavigate()    
+    
     const medals = [gold, silver, bronze]
     const lb = useSelector(selectLeaderboard)
     
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
-    
-    const firstTry = localStorage.getItem(`firstTry${l}`) === "1"
-    const win = localStorage.getItem(`winner${l}`) === "1"
     
     const copyText = `Slovo ${format(new Date(), "d.M.")}  (${strtable.length}/6)\n\n${strtable.join('\n')}`
 
@@ -62,15 +58,14 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
         <header>
             <div className="menu">
                 <img alt="infoicon" onClick={() => setOpen({help: !open.help, stats: false})}  className="icon" src={keyTheme === "dark" ? infoDark : infoLight} />
-                {targetWord && win ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
-                
+                {share ? <CopyToClipBoard text={copyText}  theme={keyTheme}/> : null }
             </div>
 
             <div className="title">SLOVO</div>
 
             <div className="menu">
-                <img alt="lightbulb" onClick={() => setOpen({help: false, stats: !open.stats})} className="icon" src={keyTheme === "dark" ? lbDark : lbLight} />
-                <img alt="cogwheel" onClick={() => setroute("settings")} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} />
+                <img alt="leaderboard" onClick={() => setOpen({help: false, stats: !open.stats})} className="icon" src={keyTheme === "dark" ? lbDark : lbLight} />
+                <img alt="cogwheel" onClick={() => navigate("/settings")} className="icon" src={keyTheme === "dark" ? settingsDark : settingsLight} />
             </div>
         </header>
         {!open.help ? null :
@@ -84,30 +79,30 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
                 <h3>Príklad: </h3>
                 <div className="playtableRow">
                     <Tablecell letter={"P"} color={theme.rightCell}/>
-                    <Tablecell letter={"E"} />
-                    <Tablecell letter={"T"} />
-                    <Tablecell letter={"E"} />
-                    <Tablecell letter={"R"} />
+                    <Tablecell letter={"E"} color={theme.wrongCell}/>
+                    <Tablecell letter={"T"} color={theme.wrongCell}/>
+                    <Tablecell letter={"E"} color={theme.wrongCell}/>
+                    <Tablecell letter={"R"} color={theme.wrongCell}/>
                 </div>
                 <p>Písmeno P je na správnom mieste</p>
 
                 <div className="playtableRow">
-                    <Tablecell letter={"S"} />
-                    <Tablecell letter={"U"} />
-                    <Tablecell letter={"S"} />
+                    <Tablecell letter={"S"} color={theme.wrongCell}/>
+                    <Tablecell letter={"U"} color={theme.wrongCell}/>
+                    <Tablecell letter={"S"} color={theme.wrongCell}/>
                     <Tablecell letter={"E"} color={theme.containedCell}/>
-                    <Tablecell letter={"D"} />
+                    <Tablecell letter={"D"} color={theme.wrongCell}/>
                 </div>
-                <p>Písmeno E sa nachádza na inom mieste</p>
+                <p>Písmeno E sa nachádza v slove ale na inom mieste</p>
 
                 <div className="playtableRow">
-                    <Tablecell letter={"A"} />
+                    <Tablecell letter={"A"} color={theme.wrongCell}/>
                     <Tablecell letter={"K"} color={theme.wrongCell}/>
-                    <Tablecell letter={"O"} />
-                    <Tablecell letter={"R"} />
-                    <Tablecell letter={"D"} />
+                    <Tablecell letter={"O"} color={theme.wrongCell}/>
+                    <Tablecell letter={"R"} color={theme.wrongCell}/>
+                    <Tablecell letter={"D"} color={theme.wrongCell}/>
                 </div>
-                <p>Písmeno K sa v slove nenachádza</p>
+                <p>Žiadne z písmen sa v slove nenachádza</p>
                 <h2 style={{textAlign: "center"}}>Nové slovo každý deň!</h2>
             </div>
         </div>}
@@ -131,21 +126,14 @@ export const Mainbar = ({targetWord, strtable, setroute}) => {
 
 
 const CopyToClipBoard = ({text, theme}) => {
-    const [open, setOpen] = React.useState(false)
-
     const makeCopy = async () => {
         await copyTextToClipboard(text)
-        setOpen(true)
-        setTimeout(() => {
-            setOpen(false)
-        }, 1000)
+        toast.info("Skopírované", {position: "top-center", toastId: 333})
     }
-
-
+    
     return (
         <>
         <img alt="shareicon" onClick={() => makeCopy()}  className="icon" src={theme === "dark" ? shareDark : shareLight} />
-        {open ? <div className="notification">Skopírované</div> : null}
         </>
     )
 }
