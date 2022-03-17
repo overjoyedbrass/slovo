@@ -46,8 +46,8 @@ export const Mainbar = ({share, strtable}) => {
     const navigate = useNavigate()
     
     const medals = [gold, silver, bronze]
-    const lb = useSelector(selectLeaderboard)
-
+    const lb = useSelector(selectLeaderboard).slice()
+    
     lb.sort((a, b) => {
         const pokusyA = a[2].split("/")[1]
         const pokusyB = a[2].split("/")[1]
