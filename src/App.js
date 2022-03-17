@@ -8,7 +8,6 @@ import { Game } from './components/Game.js'
 import { Settings } from './components/SettingsMenu/Settings.js'
 import { IntroCompo } from './components/SettingsMenu/IntroCompo.js'
 import { useSelector } from 'react-redux';
-
 import { ToastContainer, Flip } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
 

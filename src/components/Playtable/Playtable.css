@@ -36,11 +36,15 @@
     right: 4px;
 }
 
-@media only screen and (max-width: 400px), (max-height: 740px) {
+@media only screen and (max-width: 400px), (max-height: 840px) {
     .tablecell {
         font-size: 4vmin;
         width: 6vh;
     }
+	.tablecell .plus {
+		font-size: 0.5em;
+		right: 2px;
+	}
 }
 @media only screen and (max-height: 500) {
     .tablecell {

@@ -6,13 +6,12 @@ import { selectCurrentTheme } from '../../theme/themeSlice'
 import { themes } from '../../theme/themes.js'
 import homeDark from '../../img/homeDark.png'
 import homeLight from '../../img/homeLight.png'
-import { selectCurrentLength, selectHistory } from '../../slices/gameState.js'
 import './Settings.css'
 import { Suggester } from './Suggester'
 import { NicknamePicker } from './NicknamePicker'
 import { format, parseISO } from 'date-fns'
 import { useNavigate } from 'react-router-dom'
-import { setNewLength } from '../../slices/gameState.js'
+import { setNewLength, selectCurrentLength, selectHistory } from '../../app/slices/gameState'
 
 import five from '../../img/five.png'
 import six from '../../img/six.png'
@@ -40,13 +39,12 @@ export const Settings = () => {
         <div className="settingsPage">
             <header>
                 <div className="menu">
-                    <img alt="lightbulb" onClick={() => navigate("/")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
-                </div>
-                <div className="title">Nástroje</div>
-
-                <div className="menu">
                     <img alt="length" onClick={() => { dispatch(setNewLength(length === 5 ? 6 : 5)) }} className="icon" src={length === 5 ? five : six} />
                     <ThemeSwitch />
+                </div>
+                <div className="title">Nástroje</div>
+                <div className="menu">
+                    <img alt="lightbulb" onClick={() => navigate("/")} style={{float: 'left'}} className="icon" src={keyTheme === "dark" ? homeDark : homeLight} />
                 </div>
             </header>
             <div className="container">

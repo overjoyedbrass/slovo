@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
-import { setNickname } from "../../slices/nicknameSlice";
+import { setNickname } from "../../app/slices/nicknameSlice";
 
 import { toast } from 'react-toastify';
 

@@ -19,7 +19,7 @@ import bronze from '../../img/bronze.png'
 import candy from '../../img/candy.png'
 import { format } from 'date-fns'
 import { Tablecell } from '../Playtable/Tablecell.js'
-import { selectLeaderboard } from '../../slices/gameState.js'
+import { selectLeaderboard } from '../../app/slices/gameState.js'
 import { toast } from 'react-toastify'
 
 function getMinSecs(seconds){
@@ -43,10 +43,22 @@ export const Mainbar = ({share, strtable}) => {
         help: false,
         stats: false,
     })
-    const navigate = useNavigate()    
+    const navigate = useNavigate()
     
     const medals = [gold, silver, bronze]
-    const lb = useSelector(selectLeaderboard)
+    const lb = useSelector(selectLeaderboard).slice()
+    lb.sort((a, b) => {
+        const pokusyA = a[2].split("/")[1]
+        const pokusyB = a[2].split("/")[1]
+        if(pokusyA.localeCompare(pokusyB) < 0){
+            return -1
+        }
+        if(a[1] < b[1]){
+            return a[1]-b[1]
+        }
+        return a[2].split("/")[0].localeCompare(a[2].split("/")[0])
+    })
+    
     
     const keyTheme = useSelector(selectCurrentTheme)
     const theme = themes[keyTheme]
@@ -76,33 +88,48 @@ export const Mainbar = ({share, strtable}) => {
                 Každé hádane slovo musí byť validné slovo dĺžky 5. Stlač enter pre kontrolu. 
                 Po každom hádani sa zmeni farba políčka podľa toho ako blízko bol váš pokus.
                 <br />
-                <h3>Príklad: </h3>
-                <div className="playtableRow">
-                    <Tablecell letter={"P"} color={theme.rightCell}/>
-                    <Tablecell letter={"E"} color={theme.wrongCell}/>
-                    <Tablecell letter={"T"} color={theme.wrongCell}/>
-                    <Tablecell letter={"E"} color={theme.wrongCell}/>
-                    <Tablecell letter={"R"} color={theme.wrongCell}/>
-                </div>
-                <p>Písmeno P je na správnom mieste</p>
+                <h3>Príklad: Nech hádane slovo je "Motor"</h3>
 
+                <h6 style={{margin: 0 }}>1. Pokus</h6>
                 <div className="playtableRow">
-                    <Tablecell letter={"S"} color={theme.wrongCell}/>
+                    <Tablecell letter={"H"} color={theme.wrongCell}/>
                     <Tablecell letter={"U"} color={theme.wrongCell}/>
-                    <Tablecell letter={"S"} color={theme.wrongCell}/>
-                    <Tablecell letter={"E"} color={theme.containedCell}/>
                     <Tablecell letter={"D"} color={theme.wrongCell}/>
-                </div>
-                <p>Písmeno E sa nachádza v slove ale na inom mieste</p>
-
-                <div className="playtableRow">
+                    <Tablecell letter={"B"} color={theme.wrongCell}/>
                     <Tablecell letter={"A"} color={theme.wrongCell}/>
-                    <Tablecell letter={"K"} color={theme.wrongCell}/>
-                    <Tablecell letter={"O"} color={theme.wrongCell}/>
-                    <Tablecell letter={"R"} color={theme.wrongCell}/>
-                    <Tablecell letter={"D"} color={theme.wrongCell}/>
                 </div>
-                <p>Žiadne z písmen sa v slove nenachádza</p>
+                <p>Žiadne z písmen sa v hádanom slove nenachádza</p>
+
+                <h6 style={{margin: 0 }}>2. Pokus</h6>
+                <div className="playtableRow">
+                    <Tablecell letter={"O"} color={theme.containedCell} multiple={true}/>
+                    <Tablecell letter={"K"} color={theme.wrongCell}/>
+                    <Tablecell letter={"R"} color={theme.containedCell}/>
+                    <Tablecell letter={"E"} color={theme.wrongCell}/>
+                    <Tablecell letter={"M"} color={theme.containedCell}/>
+                </div>
+                <p>Písmeno O sa nachádza v hádanom slove viackrát, ale je na nesprávnej pozícií. Písmena R a M sú v hádanom slove, ale v našom pokuse sú na nesprávnej pozícií.</p>
+
+                <h6 style={{margin: 0 }}>3. Pokus</h6>
+                <div className="playtableRow">
+                    <Tablecell letter={"M"} color={theme.rightCell}/>
+                    <Tablecell letter={"E"} color={theme.wrongCell}/>
+                    <Tablecell letter={"T"} color={theme.rightCell}/>
+                    <Tablecell letter={"R"} color={theme.containedCell}/>
+                    <Tablecell letter={"O"} color={theme.containedCell} multiple={true}/>
+                </div>
+                <p>Písmena M a T sú na správnej pozícií. Písmeno O sa v hádanom slove nachádza, ale nie je na správnej pozícií. Znak + nad písmenom znamená, že písmeno je v hádanom slove viackrát</p>
+
+                <h6 style={{margin: 0 }}>4. Pokus</h6>
+                <div className="playtableRow">
+                    <Tablecell letter={"M"} color={theme.rightCell} />
+                    <Tablecell letter={"O"} color={theme.rightCell} />
+                    <Tablecell letter={"T"} color={theme.rightCell} />
+                    <Tablecell letter={"O"} color={theme.rightCell} />
+                    <Tablecell letter={"R"} color={theme.rightCell} />
+                </div>
+                <p>Uhádli sme hádane slovo.</p>
+            
                 <h2 style={{textAlign: "center"}}>Nové slovo každý deň!</h2>
             </div>
         </div>}

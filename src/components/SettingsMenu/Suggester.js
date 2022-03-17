@@ -1,6 +1,5 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { suggestWord } from "../../helpers/helpers";
 import { themes } from "../../theme/themes";
 import { selectCurrentTheme } from "../../theme/themeSlice";
 import { toast } from "react-toastify";
@@ -36,7 +35,7 @@ export const Suggester = () => {
         const last = new Date(parseInt(localStorage.lastSuggest))
 
         if(!localStorage.lastSuggest ||datesAre10MApart(teraz, last)){
-            suggestWord(word)
+            // suggest Word
             setWord("")
             toast.success("Úspešne odoslané", {toastId: 142})
             localStorage.lastSuggest = ''+teraz.getTime()

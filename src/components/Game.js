@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Mainbar } from './Mainbar/Mainbar.js'
 import { Spinner } from './Spinner/Spinner.js'
-import { loadAttempt, loadTable, isLetter, copy2D, loadWord, removeGameStorage, wordCheck,  letterFrequency, saveToStorage, lbwrite, letterToAccent, increaseRound } from '../helpers/helpers.js'
+import { hashCode, loadAttempt, loadTable, isLetter, copy2D, removeGameStorage, wordCheck,  letterFrequency, saveToStorage,  letterToAccent, increaseRound } from '../helpers/helpers.js'
 import './Game.css'
 import { endOfDay } from 'date-fns'
 
@@ -11,8 +11,9 @@ import { selectCurrentTheme } from '../theme/themeSlice.js'
 import { Playtable } from './Playtable/Playtable.js'
 import { Keyboard } from './Keyboard/Keyboard.js'
 import { InfoBox } from './InfoBox.js'
-import { saveGameState, updateLeaderboard, selectCurrentLength, selectTargetWord } from '../slices/gameState.js'
+import { selectCurrentLength, selectTargetWord, updateLeaderboard } from '../app/slices/gameState.js'
 import { toast } from 'react-toastify'
+import { useLbWriteMutation } from '../app/api/apiSlice.js'
 
 function isWinner(table, attempt, targetWord){
     if(attempt === 0) return false
@@ -46,31 +47,30 @@ export const Game = () => {
     const targetWord = useSelector(selectTargetWord)
     const nickname = localStorage.nickname ?? ""
 
-    const [inputEnabled, allowInput] = React.useState(true)
-    const [table, setTable] = React.useState(loadTable(attempts, wordLength))
-    const [attempt, setAttempt] = React.useState(loadAttempt(wordLength))
-    const winner = isWinner(table, attempt, targetWord)    
-    const [correctLetters, usedLetters] = getLetters(table, attempt, targetWord)
-    const dispatch = useDispatch()
+    const [gameState, setGameState] = React.useState({
+        table: loadTable(attempts, wordLength),
+        attempt: loadAttempt(wordLength)
+    })
+    const winner = isWinner(gameState.table, gameState.attempt, targetWord)    
+    const [correctLetters, usedLetters] = getLetters(gameState.table, gameState.attempt, targetWord)
 
+    const dispatch = useDispatch()
+    const [lbwrite, { loading }] = useLbWriteMutation()
+
+    console.log(targetWord)
+    
     const strtable = []
     const multiples = []
-    React.useEffect(() => {
-        if(targetWord !== "") return
-        loadWord(wordLength).then(odpoved => {
-            const [slovo, newWord, leaderboard, history] = odpoved
 
-            if(newWord){
-                saveToStorage("lastload", wordLength, (new Date()).getTime())
-                saveToStorage("round", wordLength, 1)
-                resetGame()
-            }
-            dispatch(saveGameState({
-                word: slovo,
-                leaderboard: leaderboard,
-                history: history
-            }))
-        })
+    React.useEffect(() => {
+        if(!targetWord) return
+        const lastWord = localStorage.getItem(`lastword${wordLength}`)
+        if(!lastWord || parseInt(lastWord) !== hashCode(targetWord)){
+            saveToStorage('lastword', wordLength, hashCode(targetWord))
+            saveToStorage("lastload", wordLength, (new Date()).getTime())
+            saveToStorage("round", wordLength, 1)
+            resetGame()
+        }
     })
 
     React.useEffect(() => {
@@ -78,9 +78,9 @@ export const Game = () => {
     }, [theme])
 
     React.useEffect(() => {
-        saveToStorage("attempt", wordLength, attempt)
-        saveToStorage("table", wordLength, table)
-    }, [attempt, wordLength])
+        saveToStorage("attempt", wordLength, gameState.attempt)
+        saveToStorage("table", wordLength, gameState.table)
+    }, [gameState, wordLength])
 
     React.useEffect(() => {
         const handleKeyDown = (event) => handlefunction(event.key)
@@ -90,8 +90,7 @@ export const Game = () => {
 
     const handlefunction = letter => {
         if(winner) return
-        if(attempt >= attempts) return
-        if(!inputEnabled) return
+        if(gameState.attempt >= attempts) return
         if(letter === '↵' || letter === "Enter") checkAndSubmit()
         else if(letter ==='⌫' || letter === "Backspace") removeLetter()
         else addLetter(letter)
@@ -99,17 +98,17 @@ export const Game = () => {
 
     const checkAndSubmit = async () => {
         if(winner) return
-        if(table[attempt].includes("")){
+        if(gameState.table[gameState.attempt].includes("")){
             toast.warn(`Slovo musí byť dĺžky ${wordLength}`, {toastId: 101})
             return
         }
-        const slovo = table[attempt].join("")
+        const slovo = gameState.table[gameState.attempt].join("")
         const goodWord = wordCheck(slovo)
         
         if(!goodWord){
-            const copy = copy2D(table)
-            copy[attempt] = Array(wordLength).fill("")
-            setTable(copy)
+            const copy = copy2D(gameState.table)
+            copy[gameState.attempt] = Array(wordLength).fill("")
+            setGameState({...gameState, table: copy})
             toast.warn("Slovo nie je v zozname", {toastId: 101})
             return
         }
@@ -127,7 +126,7 @@ export const Game = () => {
                 if(isNaN(diff) || isNaN(round)){
                     throw(new Error("Chyba pri zapise do tabuľky :("))
                 }
-                const attemptStr = `${attempt+1+attempts*(round-1)}/${attempts*round}`
+                const attemptStr = `${gameState.attempt+1+attempts*(round-1)}/${attempts*round}`
                 dispatch(updateLeaderboard([nickname, diff, attemptStr]))
                 lbwrite({ nick: nickname, time: diff, attempt: attemptStr, length: wordLength })
             }
@@ -135,9 +134,9 @@ export const Game = () => {
                 console.log(err)
             }
         }
-        setAttempt(attempt + 1)
-        if(attempt+1 >= attempts){
-            toast.info("Vyčerpali ste pokusy :(", {toastId: 2, autoClose: 3000})
+        setGameState({...gameState, attempt: gameState.attempt + 1})
+        if(gameState.attempt+1 >= attempts){
+            toast.info("Vyčerpali ste pokusy :(", {toastId: 1, autoClose: 3000})
         }
     }
     const addLetter = letter => {
@@ -145,21 +144,21 @@ export const Game = () => {
         if(!isLetter(letter)){
             return
         }
-        const copy = copy2D(table)
-        for(let i = 0; i < copy[attempt].length; i++){
-            if(copy[attempt][i] === ""){
-                copy[attempt][i] = letter
-                setTable(copy)
+        const copy = copy2D(gameState.table)
+        for(let i = 0; i < copy[gameState.attempt].length; i++){
+            if(copy[gameState.attempt][i] === ""){
+                copy[gameState.attempt][i] = letter
+                setGameState({attempt: gameState.attempt, table: copy})
                 return
             }
         }
     }
     const removeLetter = () => {
-        const copy = copy2D(table)
-        for(let i = copy[attempt].length-1; i >= 0; i--){
-            if(copy[attempt][i] !== ""){
-                copy[attempt][i] = ""
-                setTable(copy)
+        const copy = copy2D(gameState.table)
+        for(let i = copy[gameState.attempt].length-1; i >= 0; i--){
+            if(copy[gameState.attempt][i] !== ""){
+                copy[gameState.attempt][i] = ""
+                setGameState({attempt: gameState.attempt, table: copy})
                 return
             }
         }
@@ -167,19 +166,19 @@ export const Game = () => {
 
     const resetGame = () => {        
         removeGameStorage(wordLength)
-        setTable(Array(attempts).fill(Array(wordLength).fill("")))
-        setAttempt(0)
+        setGameState({attempt: 0, table: Array(attempts).fill(Array(wordLength).fill(""))})
+
     }
 
     const getRowCellColors = index => {
         const colors = Array(wordLength).fill("")
 
-        if(index >= attempt){
+        if(index >= gameState.attempt){
             return colors
         }
 
         let copyRow = Array(wordLength).fill("")
-        const inputWord = table[index].join("")
+        const inputWord = gameState.table[index].join("")
         const freq = letterFrequency(targetWord)
 
         for(let i = 0; i < wordLength; i++){
@@ -243,7 +242,7 @@ export const Game = () => {
                 <>
                 {
                     winner ? <><InfoBox theme={theme} targetWord={targetWord}/><Timer color={theme.textColor}/></> : 
-                    attempt >= attempts ? <button style={{color: theme.textColor, backgroundColor: theme.bgColor }} onClick={() => {increaseRound(wordLength); resetGame()}}>Skúsiť znovu</button> : null
+                    gameState.attempt >= attempts ? <button style={{color: theme.textColor, backgroundColor: theme.bgColor }} onClick={() => {increaseRound(wordLength); resetGame()}}>Skúsiť znovu</button> : null
                 }
                 </>
                 ) : null
@@ -260,7 +259,7 @@ export const Game = () => {
                  :
                 (
                     <>
-                    <Playtable gameState={table} theme={theme} colors={rowColors} multiples={multiples}/>
+                    <Playtable gameState={gameState.table} theme={theme} colors={rowColors} multiples={multiples}/>
                     <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
                     </>
                 )
