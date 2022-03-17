@@ -55,9 +55,7 @@ export const Game = () => {
     const [correctLetters, usedLetters] = getLetters(gameState.table, gameState.attempt, targetWord)
 
     const dispatch = useDispatch()
-    const [lbwrite, { loading }] = useLbWriteMutation()
-
-    console.log(targetWord)
+    const [lbwrite, { }] = useLbWriteMutation()
     
     const strtable = []
     const multiples = []

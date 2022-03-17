@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 
-const BASE_URL = "" 
-const AUTHORIZATION_KEY = "" 
+const BASE_URL = ""
+const AUTHORIZATION_KEY = ""
 
 export const apiSlice = createApi({
     baseQuery: fetchBaseQuery({
