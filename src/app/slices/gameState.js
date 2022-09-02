@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loadWordLength } from "../../helpers/helpers";
-import { apiSlice } from '../api/apiSlice.js'
 
 
 export const gameStateSlice = createSlice({
@@ -8,7 +7,8 @@ export const gameStateSlice = createSlice({
     initialState: {
         currentLength: loadWordLength(),
         words: {
-
+            5: "slovo",
+            6: "teória"
         },
         leaderboards: {
 
@@ -23,16 +23,6 @@ export const gameStateSlice = createSlice({
             localStorage.wordLength = action.payload
             state.currentLength = action.payload
         }
-    },
-    extraReducers: (builder) => {
-        builder.addMatcher(
-            apiSlice.endpoints.gamedata.matchFulfilled,
-            (state, { payload }) => {
-                state.words = payload.words
-                state.leaderboards = payload.lb
-                state.history = payload.history
-            }
-        )
     }
 })
 

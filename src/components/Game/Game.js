@@ -1,19 +1,17 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Mainbar } from './Mainbar/Mainbar.js'
-import { Spinner } from './Spinner/Spinner.js'
-import { hashCode, loadAttempt, loadTable, isLetter, copy2D, removeGameStorage, wordCheck,  letterFrequency, saveToStorage,  letterToAccent, increaseRound } from '../helpers/helpers.js'
+import { Mainbar } from '../Mainbar/Mainbar.js'
+import { loadAttempt, loadTable, isLetter, copy2D, removeGameStorage, isWordCorrect,  letterFrequency, saveToStorage,  letterToAccent, increaseRound } from '../../helpers/helpers.js'
 import './Game.css'
 import { endOfDay } from 'date-fns'
-
-import { themes } from '../theme/themes.js'
-import { selectCurrentTheme } from '../theme/themeSlice.js'
-import { Playtable } from './Playtable/Playtable.js'
-import { Keyboard } from './Keyboard/Keyboard.js'
-import { InfoBox } from './InfoBox.js'
-import { selectCurrentLength, selectTargetWord, updateLeaderboard } from '../app/slices/gameState.js'
+import { wordleForDate } from '../../utils/indexing.js'
+import { themes } from '../../theme/themes.js'
+import { selectCurrentTheme } from '../../theme/themeSlice.js'
+import { Playtable } from '../Playtable/Playtable.js'
+import { Keyboard } from '../Keyboard/Keyboard.js'
+import { InfoBox } from '../InfoBox.js'
+import { selectCurrentLength, selectTargetWord, updateLeaderboard } from '../../app/slices/gameState.js'
 import { toast } from 'react-toastify'
-import { useLbWriteMutation } from '../app/api/apiSlice.js'
 
 function isWinner(table, attempt, targetWord){
     if(attempt === 0) return false
@@ -25,6 +23,7 @@ function isWinner(table, attempt, targetWord){
     }
     return true
 }
+
 function getLetters(table, attempt, targetWord){
     const usedLetters = new Set()
     const correctLetters = []
@@ -44,27 +43,23 @@ export const Game = () => {
     const theme = themes[useSelector(selectCurrentTheme)]
     const attempts = 6
     const wordLength = useSelector(selectCurrentLength)
-    const targetWord = useSelector(selectTargetWord)
-    const nickname = localStorage.nickname ?? ""
+    const targetWord = wordleForDate(new Date())
 
     const [gameState, setGameState] = React.useState({
         table: loadTable(attempts, wordLength),
         attempt: loadAttempt(wordLength)
     })
+
     const winner = isWinner(gameState.table, gameState.attempt, targetWord)    
     const [correctLetters, usedLetters] = getLetters(gameState.table, gameState.attempt, targetWord)
-
-    const dispatch = useDispatch()
-    const [lbwrite, { }] = useLbWriteMutation()
     
     const strtable = []
     const multiples = []
 
     React.useEffect(() => {
-        if(!targetWord) return
-        const lastWord = localStorage.getItem(`lastword${wordLength}`)
-        if(!lastWord || parseInt(lastWord) !== hashCode(targetWord)){
-            saveToStorage('lastword', wordLength, hashCode(targetWord))
+        const lastWord = localStorage.getItem(`lastWord${wordLength}`)
+        if(lastWord !== targetWord){
+            localStorage.setItem(`lastWord${wordLength}`, targetWord)
             saveToStorage("lastload", wordLength, (new Date()).getTime())
             saveToStorage("round", wordLength, 1)
             resetGame()
@@ -101,7 +96,7 @@ export const Game = () => {
             return
         }
         const slovo = gameState.table[gameState.attempt].join("")
-        const goodWord = wordCheck(slovo)
+        const goodWord = isWordCorrect(slovo)
         
         if(!goodWord){
             const copy = copy2D(gameState.table)
@@ -114,29 +109,13 @@ export const Game = () => {
         if(guessed){
             toast.success("Gratulujem!", {toastId: 1, autoClose: 5000})
         }
-        if(guessed && nickname){
-            try{
-                const lastload = new Date(parseInt(localStorage.getItem(`lastload${wordLength}`)))
-                const now = new Date()
-                const diff = Math.abs(Math.floor((lastload.getTime() - now.getTime()) / 1000))
-                const round = parseInt(localStorage.getItem(`round${wordLength}`))
-
-                if(isNaN(diff) || isNaN(round)){
-                    throw(new Error("Chyba pri zapise do tabuľky :("))
-                }
-                const attemptStr = `${gameState.attempt+1+attempts*(round-1)}/${attempts*round}`
-                dispatch(updateLeaderboard([nickname, diff, attemptStr]))
-                lbwrite({ nick: nickname, time: diff, attempt: attemptStr, length: wordLength })
-            }
-            catch(err){
-                console.log(err)
-            }
-        }
+        
         setGameState({...gameState, attempt: gameState.attempt + 1})
         if(gameState.attempt+1 >= attempts){
             toast.info("Vyčerpali ste pokusy :(", {toastId: 1, autoClose: 3000})
         }
     }
+
     const addLetter = letter => {
         letter = letter.toLowerCase()
         if(!isLetter(letter)){
@@ -151,6 +130,7 @@ export const Game = () => {
             }
         }
     }
+
     const removeLetter = () => {
         const copy = copy2D(gameState.table)
         for(let i = copy[gameState.attempt].length-1; i >= 0; i--){
@@ -186,7 +166,6 @@ export const Game = () => {
                 freq[inputWord[i]] -= 1
             }
         }
-
         for(let i = 0; i < wordLength; i++){
             if(colors[i] !== "") continue;
             if(targetWord.includes(inputWord[i]) && freq[inputWord[i]] > 0){
@@ -225,6 +204,7 @@ export const Game = () => {
             return theme.wrongCell
         }
     }
+    
     const rowColors = []
     if(targetWord){
         for(let i = 0; i < attempts; i++){
@@ -233,35 +213,17 @@ export const Game = () => {
     }
 
     return (
-        <div className="game" style={{justifyContent: !targetWord ? "start" : "space-between"}}>
+        <div className="game">
             <div className="wrapper">
             <Mainbar share={targetWord && winner} strtable={strtable}/>
-            { targetWord ? (
-                <>
-                {
-                    winner ? <><InfoBox theme={theme} targetWord={targetWord}/><Timer color={theme.textColor}/></> : 
-                    gameState.attempt >= attempts ? <button style={{color: theme.textColor, backgroundColor: theme.bgColor }} onClick={() => {increaseRound(wordLength); resetGame()}}>Skúsiť znovu</button> : null
-                }
-                </>
-                ) : null
+            {
+                winner || gameState.attempt >= attempts ? <><InfoBox theme={theme} targetWord={targetWord}/><Timer color={theme.textColor}/></> : null
             }
             </div>
-            {  
-                !targetWord ? 
-                (
-                    <>
-                    <div className="loadingMessage">Načítavam slovo : )</div>
-                    <Spinner theme={theme}/>
-                    </>
-                )
-                 :
-                (
-                    <>
-                    <Playtable gameState={gameState.table} theme={theme} colors={rowColors} multiples={multiples}/>
-                    <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
-                    </>
-                )
-            }
+               
+                <Playtable gameState={gameState.table} theme={theme} colors={rowColors} multiples={multiples}/>
+                <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
+
             {/* <button onClick={() => resetGame()}>RESET</button> */}
         </div>
     )

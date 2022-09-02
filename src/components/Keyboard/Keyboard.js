@@ -6,7 +6,7 @@ import { themes } from '../../theme/themes'
 import { useSelector } from 'react-redux'
 import { selectCurrentTheme } from '../../theme/themeSlice'
 
-import './Keyboard.css'
+import { Flex } from '@chakra-ui/react'
 
 const ROWS = [
     'ľščťžýáíéóďúň',
@@ -19,9 +19,15 @@ export const Keyboard = ({handlefunction, getKeyCellColor}) => {
     const theme = themes[useSelector(selectCurrentTheme)]
 
     return (
-        <div className="keyboard">{
+        <Flex
+            w="100%"
+            maxW="650px"
+            minH="10em"
+            direction="column"
+            userSelect="none"
+        >{
             ROWS.map((row, rowIndex) => 
-            <div key={rowIndex} className="keyBoardRow">
+            <Flex grow={1} key={rowIndex}>
                 { row.split('').map(l => 
                     <Keycell
                         key={l} 
@@ -31,8 +37,8 @@ export const Keyboard = ({handlefunction, getKeyCellColor}) => {
                         theme={theme}
                     />
                 )}
-            </div>
+            </Flex>
             )}
-        </div>
+        </Flex>
     )
 }

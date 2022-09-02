@@ -1,8 +1,9 @@
-import { words } from './words.js'
+import { words5 } from './words5.js'
+import { words6 } from './words6.js'
 const diakritika = 'ľščťžýáíéóďúň'
 
-export function wordCheck(slovo) {
-    return words.includes(slovo)
+export function isWordCorrect(slovo) {
+    return words5.includes(slovo) || words6.includes(slovo)
 }
 
 export function letterToAccent(l){
@@ -13,10 +14,6 @@ export function letterToAccent(l){
     }
     const output = letterMap[l]
     return output ? output : l.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-}
-
-export function hashCode(s){
-    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);              
 }
 
 export function copy2D(array2d){
@@ -66,8 +63,6 @@ export const loadWordLength = () => {
     }
     return length
 }
-
-
 
 export function letterFrequency(word){
     const freq = {}
