@@ -1,35 +1,23 @@
 import React from 'react'
 
-import { themes } from '../../theme/themes'
-import { useSelector } from 'react-redux'
-import { selectCurrentTheme } from '../../theme/themeSlice'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex,  useColorMode } from '@chakra-ui/react'
+import { appColors as allAppColors } from '../../theme/theme.js'
 
-export const Tablecell = ({letter, color, multiple}) => {
-    const theme = themes[useSelector(selectCurrentTheme)]
-
+export const Tablecell = ({letter, color, multiple, ...props}) => {
+    const { colorMode } = useColorMode()
+    const appColors = allAppColors[colorMode]
     const colors = { 
         backgroundColor: color, 
-        borderColor: color ? color : letter ? theme.cellBgFill : theme.cellBg
+        borderColor: color ? color : letter ? appColors.cellBgFill : appColors.cellBg
     }
 
     return (
-        <Flex 
-            style={{ ...colors, aspectRatio: "1"}}
-            verticalAlign={"middle"}
-            justify="center"
-            align={"center"}
-            border="2px solid"
-            position="relative"
-            rounded="lg"
-            flexBasis={0}
-            m="1"
-            textTransform="uppercase"
-            fontSize="3vh"
+        <Flex
+            className='tableCell'
+            style={{ ...colors }}
+            {...props}
         >
-            <Text as='b'>
-                { letter }
-            </Text>
+            <b>{ letter }</b>
             { multiple ?
             (<Box 
                 position="absolute"

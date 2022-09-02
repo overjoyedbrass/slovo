@@ -1,21 +1,18 @@
 import React from 'react'
 
-import { useSelector, useDispatch } from 'react-redux'
-import { selectCurrentTheme, setCurrentTheme } from '../../theme/themeSlice'
-
 import bulbLight from '../../img/bulbLight.png'
 import bulbDark from '../../img/bulbDark.png'
 
-export const ThemeSwitch = () => {
-    const keyTheme = useSelector(selectCurrentTheme)
-    const dispatch = useDispatch()
+import { useColorMode, useColorModeValue, Image } from '@chakra-ui/react'
 
-    const switchTheme = () => {
-        const newTheme = keyTheme === "dark" ? "light" : "dark"
-        dispatch(setCurrentTheme(newTheme))
-    }
+export const ThemeSwitch = () => {
+    const { toggleColorMode } = useColorMode()
 
     return (
-        <img alt="themeicon" style={{float: 'right'}} onClick={switchTheme} className="icon" src={keyTheme === "dark" ? bulbDark : bulbLight} />
+        <Image alt="themeicon" 
+            onClick={toggleColorMode}
+            className="icon"
+            src={useColorModeValue(bulbLight, bulbDark)}
+        />
     )
 }

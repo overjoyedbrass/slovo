@@ -1,7 +1,7 @@
-import { words5 } from "../helpers/words5";
-import { words6 } from "../helpers/words6";
+import { words5 } from "./words5";
+import { words6 } from "./words6";
 
-const gameBeginning = new Date('2 September 2022').setHours(0, 0, 0, 0);
+const gameBeginning = new Date('1 September 2022').setHours(0, 0, 0, 0);
 
 const dateIndex = (beginning, date) =>
     Math.round((date.setHours(0, 0, 0, 0) - beginning) / 864e5)

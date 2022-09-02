@@ -1,45 +1,43 @@
 import React from 'react'
 import { Tablecell } from './Tablecell.js'
+import { useGameStore } from '../../app/store.js'
 
-import { useSelector } from 'react-redux'
-import { selectCurrentTheme } from '../../theme/themeSlice'
-import { themes } from '../../theme/themes'
 import { Flex } from '@chakra-ui/react'
 
-export const Playtable = ({gameState, colors, multiples}) => {
-    const theme = themes[useSelector(selectCurrentTheme)]
+export const Playtable = ({ gameState, colors, multiples }) => {
+    const wordLength = useGameStore(state => state.length)
     return (
-        <Flex 
-            sx={{ aspectRatio: "1" }}
-            w="100%"
+        <Flex
             maxW="600px"
-            maxH="60vh"
+            w="100%"
+            columns={wordLength}
+            m="2em 0"
+            p="0 2em"
             grow={1}
-            shrink={1}
-            direction="column" 
-            m="5vh 0"
             userSelect={"none"}
-        >{
+            spacing={0}
+            direction="column"
+        >
+            {
             gameState.map((row, rowIndex) => {
                 const rowColors = colors[rowIndex]
                 return (
-                    <Flex 
-                        key={rowIndex} 
-                        justify="center"
+                    <Flex
+                        key={rowIndex}
                         grow={1}
                         flexBasis={0}
-                    >{
-                        row.map( (l, colIndex) => 
-                            <Tablecell
-                                key={colIndex}
-                                letter={l}
-                                color={rowColors[colIndex]}
-                                theme={theme}
-                                multiple={multiples.includes(`${rowIndex}.${colIndex}`)}
-                            />
-                        )}
-                    </Flex>
-                )
+                    >
+                        { row.map((letter, colIndex) => {
+                            return (
+                                <Tablecell
+                                    key={colIndex}
+                                    letter={letter}
+                                    color={rowColors[colIndex]}
+                                    multiple={multiples.includes(`${rowIndex}.${colIndex}`)}
+                                />
+                            )
+                        })}
+                </Flex>)
             })}
         </Flex>
     )

@@ -1,49 +1,23 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useGameStore } from '../../app/store.js'
 import { Mainbar } from '../Mainbar/Mainbar.js'
-import { loadAttempt, loadTable, isLetter, copy2D, removeGameStorage, isWordCorrect,  letterFrequency, saveToStorage,  letterToAccent, increaseRound } from '../../helpers/helpers.js'
-import './Game.css'
-import { endOfDay } from 'date-fns'
+import { loadAttempt, isWinner, getLetters, loadTable, isLetter, copy2D, removeGameStorage, isWordCorrect,  letterFrequency, saveToStorage,  letterToAccent } from '../../utils/helpers.js'
 import { wordleForDate } from '../../utils/indexing.js'
-import { themes } from '../../theme/themes.js'
-import { selectCurrentTheme } from '../../theme/themeSlice.js'
+import { appColors as allAppColors } from '../../theme/theme.js'
 import { Playtable } from '../Playtable/Playtable.js'
 import { Keyboard } from '../Keyboard/Keyboard.js'
-import { InfoBox } from '../InfoBox.js'
-import { selectCurrentLength, selectTargetWord, updateLeaderboard } from '../../app/slices/gameState.js'
+import { InfoBox } from './InfoBox.js'
 import { toast } from 'react-toastify'
-
-function isWinner(table, attempt, targetWord){
-    if(attempt === 0) return false
-    const input = table[attempt-1].join("")
-    for(let i = 0; i < input.length; i++){
-        if(input[i] !== targetWord[i]){
-            return false
-        }
-    }
-    return true
-}
-
-function getLetters(table, attempt, targetWord){
-    const usedLetters = new Set()
-    const correctLetters = []
-    for(let i = 0; i < attempt; i++){
-        for(let j = 0; j < table[i].length; j++){
-            if(table[i][j] === targetWord[j]){
-                correctLetters.push(table[i][j])
-            }
-            usedLetters.add(table[i][j])
-            usedLetters.add(letterToAccent(table[i][j]))
-        }
-    }
-    return [correctLetters, usedLetters]
-}
+import { Flex, useColorMode, VStack } from '@chakra-ui/react'
+import { Timer } from './Timer.js'
 
 export const Game = () => {
-    const theme = themes[useSelector(selectCurrentTheme)]
+    const { colorMode } = useColorMode()
+    const appColors = allAppColors[colorMode]
     const attempts = 6
-    const wordLength = useSelector(selectCurrentLength)
-    const targetWord = wordleForDate(new Date())
+
+    const wordLength = useGameStore((state) => state.length)
+    const targetWord = wordleForDate(new Date(), wordLength)
 
     const [gameState, setGameState] = React.useState({
         table: loadTable(attempts, wordLength),
@@ -61,19 +35,21 @@ export const Game = () => {
         if(lastWord !== targetWord){
             localStorage.setItem(`lastWord${wordLength}`, targetWord)
             saveToStorage("lastload", wordLength, (new Date()).getTime())
-            saveToStorage("round", wordLength, 1)
             resetGame()
         }
     })
 
     React.useEffect(() => {
-        document.body.style = `background: ${theme.bgColor} ; color: ${theme.textColor}`;
-    }, [theme])
+        setGameState({
+            table: loadTable(attempts, wordLength),
+            attempt: loadAttempt(wordLength)
+        })
+    }, [wordLength])
 
     React.useEffect(() => {
         saveToStorage("attempt", wordLength, gameState.attempt)
         saveToStorage("table", wordLength, gameState.table)
-    }, [gameState, wordLength])
+    }, [gameState])
 
     React.useEffect(() => {
         const handleKeyDown = (event) => handlefunction(event.key)
@@ -161,7 +137,7 @@ export const Game = () => {
 
         for(let i = 0; i < wordLength; i++){
             if(targetWord[i] === inputWord[i]){
-                colors[i] = theme.rightCell
+                colors[i] = appColors.rightCell
                 copyRow[i] = "🟩"
                 freq[inputWord[i]] -= 1
             }
@@ -169,12 +145,12 @@ export const Game = () => {
         for(let i = 0; i < wordLength; i++){
             if(colors[i] !== "") continue;
             if(targetWord.includes(inputWord[i]) && freq[inputWord[i]] > 0){
-                colors[i] = theme.containedCell
+                colors[i] = appColors.containedCell
                 copyRow[i] = "🟨"
                 freq[inputWord[i]] -= 1
             }
             else {
-                colors[i] = theme.wrongCell
+                colors[i] = appColors.wrongCell
                 copyRow[i] = "⬛"
             }
         }
@@ -195,13 +171,13 @@ export const Game = () => {
             return ""
         }
         else if(correctLetters.includes(l)){ 
-            return theme.rightCell
+            return appColors.rightCell
         }
         else if (targetWord.toLowerCase().includes(l)){
-            return theme.containedCell
+            return appColors.containedCell
         }
         else{
-            return theme.wrongCell
+            return appColors.wrongCell
         }
     }
     
@@ -213,47 +189,36 @@ export const Game = () => {
     }
 
     return (
-        <div className="game">
-            <div className="wrapper">
-            <Mainbar share={targetWord && winner} strtable={strtable}/>
-            {
-                winner || gameState.attempt >= attempts ? <><InfoBox theme={theme} targetWord={targetWord}/><Timer color={theme.textColor}/></> : null
-            }
-            </div>
+        <Flex
+            direction="column"
+            justify="space-between"
+            align="center"
+            w="100%"
+            sx={{height: "calc(var(--vh, 1vh)*100);"}}
+        >
+            <VStack w="100%" spacing={2}>
+                <Mainbar share={targetWord && winner} strtable={strtable}/>
+                {
+                    winner || gameState.attempt >= attempts ? 
+                    <>
+                        <InfoBox targetWord={targetWord}/>
+                        <Timer />
+                    </> : null
+                }
+            </VStack>
                
-                <Playtable gameState={gameState.table} theme={theme} colors={rowColors} multiples={multiples}/>
-                <Keyboard handlefunction={handlefunction} getKeyCellColor={getKeyCellColor}/>
+            <Playtable 
+                gameState={gameState.table} 
+                colors={rowColors} 
+                multiples={multiples}
+                ratio={`${wordLength/attempts}`}
+            />
+            <Keyboard 
+                handlefunction={handlefunction} 
+                getKeyCellColor={getKeyCellColor}
+            />
 
             {/* <button onClick={() => resetGame()}>RESET</button> */}
-        </div>
-    )
-}
-
-const Timer = ({color}) => {
-    const [time, setTime] = React.useState(new Date())
-    const eod = endOfDay(time)
-    const h = eod.getHours()-time.getHours()
-    const m = eod.getMinutes()-time.getMinutes()
-    const s = eod.getSeconds()-time.getSeconds()
-
-    let refresh = true
-    let content
-    if (h === 0 && m === 0 && s === 0){
-        content = <a style={{color: color}} href="/">Obnoviť</a>
-        refresh = false
-    }
-    else {
-        content = `Nové slovo: ${h < 10 ? "0"+h : h}:${m < 10 ? "0"+m : m}:${s < 10 ? "0"+s : s}`
-    }
-
-    React.useEffect(() => {
-        if(refresh){
-            const interval = setInterval(() => setTime(new Date()), 1000)
-            return () => clearInterval(interval)
-        }
-    })
-
-    return (
-        <div className="warning">{ content }</div>
+        </Flex>
     )
 }

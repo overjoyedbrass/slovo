@@ -7,16 +7,22 @@ import {
 import { Game } from './components/Game/Game.js'
 import { ToastContainer, Flip } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css"
-import { Fonts, theme } from './theme'
-import { ChakraProvider } from '@chakra-ui/react';
+import { Fonts } from './theme/Fonts.js'
+import { theme } from './theme/theme.js'
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
+import { GlobalStyles } from './theme/GlobalStyles'
+import { Helper } from './components/HelperPage/Helper'
+
 function App() {
     return (
         <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode}/>
             <Fonts />
+            <GlobalStyles />
             <HashRouter>
                 <Routes>
                     <Route exact path="/" element={<Game />} />
-                    <Route path="/helper" element={<div></div>}/>
+                    <Route path="/helper" element={<Helper />}/>
                 </Routes>
             </HashRouter>
             <ToastContainer

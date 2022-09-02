@@ -1,11 +1,4 @@
-import { extendTheme } from '@chakra-ui/react'
-import { Global } from '@emotion/react'
-
-export const theme = extendTheme({
-  fonts: {
-    body: `'JetBrains Mono', sans-serif`,
-  },
-})
+import { Global } from "@emotion/react"
 
 export const Fonts = () => (
     <Global

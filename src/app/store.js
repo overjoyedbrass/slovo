@@ -1,14 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import themeReducer from '../theme/themeSlice.js'
-import gameStateReducer from './slices/gameState.js'
-import nicknameReducer from './slices/nicknameSlice.js'
+import create from 'zustand'
 
-export default configureStore({
-    reducer: {
-        theme: themeReducer,
-        gameState: gameStateReducer,
-        nickname: nicknameReducer
-    },
-})
-
-
+export const useGameStore = create((set) => ({
+    length: 5,
+    switchLength: () => 
+        set((state) => {
+            localStorage.lastLength = state.length
+            return { length: state.length === 5 ? 6 : 5}
+        })
+}))

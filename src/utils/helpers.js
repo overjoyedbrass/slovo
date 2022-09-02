@@ -23,6 +23,7 @@ export function copy2D(array2d){
     }
     return newArray
 }
+
 export function isLetter(str) {
     return str.length === 1 && (str.match(/[a-z]/i) || diakritika.includes(str));
 }
@@ -77,16 +78,37 @@ export function letterFrequency(word){
     return freq
 }
 
-export function increaseRound(wordLength){
-    const round = parseInt(localStorage.getItem(`round${wordLength}`))
-    localStorage.setItem(`round${wordLength}`, round+1)
-}
-
-
 export function saveToStorage(keyWord, wordLength, data){
     localStorage.setItem(`${keyWord}${wordLength}`, JSON.stringify(data))
 }
+
 export const removeGameStorage = length => {
     localStorage.setItem(`attempt${length}`, 0)
     localStorage.setItem(`table${length}`, "")
+}
+
+export function isWinner(table, attempt, targetWord){
+    if(attempt === 0) return false
+    const input = table[attempt-1].join("")
+    for(let i = 0; i < input.length; i++){
+        if(input[i] !== targetWord[i]){
+            return false
+        }
+    }
+    return true
+}
+
+export function getLetters(table, attempt, targetWord){
+    const usedLetters = new Set()
+    const correctLetters = []
+    for(let i = 0; i < attempt; i++){
+        for(let j = 0; j < table[i].length; j++){
+            if(table[i][j] === targetWord[j]){
+                correctLetters.push(table[i][j])
+            }
+            usedLetters.add(table[i][j])
+            usedLetters.add(letterToAccent(table[i][j]))
+        }
+    }
+    return [correctLetters, usedLetters]
 }
