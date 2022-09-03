@@ -11,7 +11,7 @@ import { Fonts } from './theme/Fonts.js'
 import { theme } from './theme/theme.js'
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { GlobalStyles } from './theme/GlobalStyles'
-import { Helper } from './components/HelperPage/Helper'
+import { HelperPage } from './components/HelperPage/HelperPage'
 
 function App() {
     return (
@@ -22,7 +22,7 @@ function App() {
             <HashRouter>
                 <Routes>
                     <Route exact path="/" element={<Game />} />
-                    <Route path="/helper" element={<Helper />}/>
+                    <Route path="/helper" element={<HelperPage />}/>
                 </Routes>
             </HashRouter>
             <ToastContainer

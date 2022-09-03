@@ -2960,7 +2960,6 @@ export const words5 = [
 	"srnka",
 	"dopyt",
 	"voliť",
-	"]",
 	"celok",
 	"lakeť",
 	"vótum",

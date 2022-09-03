@@ -1,6 +1,7 @@
 import React from 'react'
 import { Image, HStack, Heading, useBreakpointValue, useColorModeValue } from '@chakra-ui/react'
 import { ThemeSwitch } from '../Buttons/ThemeSwitch'
+import { LengthSwitch } from '../Buttons/LengthSwitch'
 import { useNavigate } from 'react-router-dom'
 import homeLight from '../../img/homeLight.png'
 import homeDark from '../../img/homeDark.png'
@@ -12,7 +13,7 @@ export const Header = () => {
             pl={2}
             pr={2}
             w="100%" 
-            justify="flex-end" 
+            justify="space-between" 
             maxW="500px" 
             mt={2} 
             position="relative" 
@@ -20,6 +21,10 @@ export const Header = () => {
             pb={2}
             h={useBreakpointValue({base: "1em", sm: "1em", md: "3em"})}
         >
+            <HStack>
+                <ThemeSwitch />
+                <LengthSwitch />
+            </HStack>
             <Heading
                 position="absolute"
                 textAlign="center"
@@ -32,7 +37,6 @@ export const Header = () => {
             </Heading>
 
             <HStack className="menu" spacing={2}>
-                <ThemeSwitch />
                 <Image 
                     alt="cogwheel" 
                     onClick={() => navigate("/")} 

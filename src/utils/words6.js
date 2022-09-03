@@ -2716,7 +2716,6 @@ export const words6 = [
 	"oplzlý",
 	"cuchta",
 	"pestík",
-	"]",
 	"smoliť",
 	"sladko",
 	"udržať",
